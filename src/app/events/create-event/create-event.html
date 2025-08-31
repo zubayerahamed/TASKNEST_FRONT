@@ -284,20 +284,24 @@
           </label>
 
           <!-- Attached Files Display -->
-          <div class="attached-files-container" *ngIf="attachedFiles.length > 0">
-            <div *ngFor="let file of attachedFiles" class="attached-file-item">
-              <div class="file-icon">
-                {{ file.icon }}
-              </div>
-              <div class="file-info">
-                <div class="file-name">{{ file.name }}</div>
-                <div class="file-size">{{ formatFileSize(file.size) }}</div>
-              </div>
-              <button type="button" class="file-remove-btn" (click)="removeFile(file.id)">
-                <i class="ph ph-trash"></i>
-              </button>
+          @if(attachedFiles.length > 0){
+            <div class="attached-files-container">
+              @for (file of attachedFiles; track file.id) {
+                <div class="attached-file-item">
+                  <div class="file-icon">
+                    {{ file.icon }}
+                  </div>
+                  <div class="file-info">
+                    <div class="file-name">{{ file.name }}</div>
+                    <div class="file-size">{{ formatFileSize(file.size) }}</div>
+                  </div>
+                  <button type="button" class="file-remove-btn" (click)="removeFile(file.id)">
+                    <i class="ph ph-trash"></i>
+                  </button>
+                </div>
+              }
             </div>
-          </div>
+          }
 
           <!-- Add File Button -->
           <div class="attach-file-section">

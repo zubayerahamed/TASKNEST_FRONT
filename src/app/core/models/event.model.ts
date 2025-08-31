@@ -1,3 +1,5 @@
+import { Document } from "./attached-file.model";
+
 export interface Event {
   id: number;
   projectId: number;
@@ -16,6 +18,7 @@ export interface Event {
   checklists: EventChecklist[];
   projectName: string;
   categoryName: string;
+  documents: Document[];
 }
 
 export interface AddEvent{

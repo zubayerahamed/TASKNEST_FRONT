@@ -65,6 +65,28 @@
                         </div>
                     </div>
                 }
+
+
+                <!-- Attached Files Display -->
+                @if(event.documents && event.documents.length > 0){
+                    <div class="attached-files-container">
+                    @for (file of event.documents; track file.id) {
+                        <div class="attached-file-item">
+                            <div class="file-icon">
+                                {{ getFileIcon(file.docExt) }}
+                            </div>
+                            <div class="file-info">
+                                <div class="file-name">{{ file.title }}</div>
+                                <div class="file-size">{{ formatFileSize(file.docSize) }}</div>
+                            </div>
+                            <button type="button" class="file-remove-btn" (click)="removeFile(file, event.documents)">
+                                <i class="ph ph-trash"></i>
+                            </button>
+                        </div>
+                    }
+                    </div>
+                }
+
             </div>
         </div>
     } @else {

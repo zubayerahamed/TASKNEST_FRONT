@@ -1,7 +1,7 @@
-import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Inject, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { Participant } from '../../core/models/participant.model';
 import { ChecklistItem } from '../../core/models/checklist-item.model';
-import { AttachedFile } from '../../core/models/attached-file.model';
+import { AttachedFile, Document } from '../../core/models/attached-file.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../core/services/project.service';
@@ -14,6 +14,7 @@ import { AlertService } from '../../core/services/alert.service';
 import { SidebarStateService } from '../../core/services/sidebar-state.service';
 import { ProjectPageStateService } from '../../core/services/porjectpage-state.service';
 import { TodayPageStateService } from '../../core/services/todaypage-state.service';
+import { DocumentService } from '../../core/services/document.service';
 
 @Component({
   selector: 'app-create-event',
@@ -25,13 +26,14 @@ export class CreateEvent implements OnInit, OnChanges {
   @Input({required : true}) isAddEventModalOpen!: boolean;
   @Output() isAddEventModalClose = new EventEmitter<void>();
 
-  private alterService = inject(AlertService);
+  private alertService = inject(AlertService);
   private projectService = inject(ProjectService);
   private categoryService = inject(CategoryService);
   private eventService = inject(EventService);
   private sidebarStateService = inject(SidebarStateService);
   private projectPageStateService = inject(ProjectPageStateService);
   private todayPageStageService = inject(TodayPageStateService);
+  private documentService = inject(DocumentService);
 
   public projects: Project[] = [];
   public categories: Category[] = [];
@@ -124,6 +126,7 @@ export class CreateEvent implements OnInit, OnChanges {
     this.selectedReminder = null;
     this.enteredEventLink = '';
     this.checklistItems = [];
+    this.attachedFiles = [];
 
     this.resetErrorMessages();
   }
@@ -213,14 +216,14 @@ export class CreateEvent implements OnInit, OnChanges {
       isReminderEnabled: this.selectedReminder != null,
       reminderBefore: this.selectedReminder || 0,
       perticipants: [],
-      documents: [],
+      documents: this.attachedFiles.map(file => file.id),
       checklists: this.checklistItems? this.checklistItems.map(item => ({ description: item.text, isCompleted: item.completed })) : [],
       eventLink: this.enteredEventLink
     };
 
     this.eventService.createEvent(eventData).subscribe({
       next: (resData) => {
-        this.alterService.success('Success!', 'Event created successfully!');
+        this.alertService.success('Success!', 'Event created successfully!');
 
         // Update sidebar and project page
         this.sidebarStateService.updateSidebarProjects(null);
@@ -231,7 +234,7 @@ export class CreateEvent implements OnInit, OnChanges {
       },
       error: (error) => {
         console.error('Error creating event:', error);
-        this.alterService.error('Error!', 'Failed to create event. Please try again.');
+        this.alertService.error('Error!', 'Failed to create event. Please try again.');
       }
     });
 
@@ -428,7 +431,16 @@ export class CreateEvent implements OnInit, OnChanges {
   }
 
   removeFile(fileId: number) {
-    this.attachedFiles = this.attachedFiles.filter((f) => f.id !== fileId);
+    // Remove from server
+    this.documentService.deleteDocument(fileId).subscribe({
+      next: (resDta) => {
+        this.attachedFiles = this.attachedFiles.filter((f) => f.id !== fileId);
+      },
+      error: (err) => {
+        console.log(err);
+        this.alertService.error('Error!', 'Cant remove the document');
+      }
+    });
   }
 
   onFileSelect(event: Event) {
@@ -437,15 +449,34 @@ export class CreateEvent implements OnInit, OnChanges {
 
     if (files) {
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const attachedFile: AttachedFile = {
-          id: Date.now() + i,
-          name: file.name,
-          type: file.type,
-          size: file.size,
-          icon: this.getFileIcon(file.name, file.type),
-        };
-        this.attachedFiles.push(attachedFile);
+        const selectedFile = files[i];
+
+        // Submit file on server
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        formData.append("title", selectedFile.name);
+        formData.append("description", "");
+
+        this.documentService.uploadDocument(formData).subscribe({
+          next: (resData) => {
+            const document: Document = resData.data;
+
+            const attachedFile: AttachedFile = {
+              id: document.id,
+              name: document.title,
+              type: selectedFile.type,
+              size: selectedFile.size,
+              icon: this.getFileIcon(selectedFile.name, selectedFile.type),
+            };
+
+            this.attachedFiles.push(attachedFile);
+          }, 
+          error: (err) => {
+            console.log(err);
+            this.alertService.error('Error!', 'Cant select the document');
+          }
+        });
+
       }
     }
 

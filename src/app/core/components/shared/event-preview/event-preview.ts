@@ -5,6 +5,8 @@ import { AlertService } from '../../../services/alert.service';
 import { SidebarStateService } from '../../../services/sidebar-state.service';
 import { TodayPageStateService } from '../../../services/todaypage-state.service';
 import { ProjectPageStateService } from '../../../services/porjectpage-state.service';
+import { DocumentService } from '../../../services/document.service';
+import { Document } from '../../../models/attached-file.model';
 
 @Component({
   selector: 'app-event-preview',
@@ -21,6 +23,7 @@ export class EventPreview {
   private sidebarStateService = inject(SidebarStateService);
   private todayPageStageService = inject(TodayPageStateService);
   private projectPageStateService = inject(ProjectPageStateService);
+  private documentService = inject(DocumentService);
 
   completeEvent(event: Event) {
     if (event.isCompleted) {
@@ -163,5 +166,58 @@ export class EventPreview {
     if (minutes > 0) result += `${minutes}m`;
 
     return result.trim();
+  }
+
+  getFileIcon(extension: string): string {
+
+    if (extension === '.png') {
+      return 'PNG';
+    } else if (extension === '.jpg' || extension === 'jpeg'){
+      return 'JPG';
+    } else if (extension === '.gif'){
+      return 'GIF';
+    }  else if (extension === '.pdf') {
+      return 'PDF';
+    } else if (extension === '.doc' || extension === '.docx') {
+      return 'DOC';
+    } else if (extension === '.xls' || extension === '.xlsx') {
+      return 'XLS';
+    } else if (extension === '.ppt' || extension === '.pptx') {
+      return 'PPT';
+    } else if (extension === '.txt') {
+      return 'TXT';
+    } else if (extension === '.zip' || extension === '.rar') {
+      return 'ZIP';
+    } else if (extension === '.csv') {
+      return 'CSV';
+    } else {
+      return 'FILE';
+    }
+  }
+
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
+
+  removeFile(file: Document, documents: Document[]) {
+    // Remove from server
+    this.documentService.deleteDocument(file.id).subscribe({
+      next: (resDta) => {
+        // want to remove file from documents array
+        const index = documents.findIndex(doc => doc.id === file.id);
+        if (index > -1) {
+          documents.splice(index, 1);
+        }
+        this.alertService.success('Success!', 'Document removed successfully');
+      },
+      error: (err) => {
+        console.log(err);
+        this.alertService.error('Error!', 'Cant remove the document');
+      }
+    });
   }
 }
