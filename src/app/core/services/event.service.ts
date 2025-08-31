@@ -28,6 +28,10 @@ export class EventService extends BaseService {
     return this.http.post(`${this.baseUrl}/events`, data);
   }
 
+  deleteEvent(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/events/${id}`);
+  }
+
   markCompleteEvent(eventId: number): Observable<any> {
     return this.http.put(`${this.baseUrl}/events/markcomplete/${eventId}`, {});
   }

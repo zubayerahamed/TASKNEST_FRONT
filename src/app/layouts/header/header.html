@@ -38,6 +38,14 @@
               <i class="ph ph-gear me-3"></i>
               <span>Profile settings</span>
             </div>
+            <div class="user-profile-dropdown-item" (click)="allowPushNotification()">
+              <i class="ph ph-bell-ringing me-3"></i>
+              <span>Allow Push Notification</span>
+            </div>
+            <div class="user-profile-dropdown-item" (click)="onOpenProfileSettings()">
+              <i class="ph ph-bell-simple-slash me-3"></i>
+              <span>Disable Push Notification</span>
+            </div>
             
             <!-- Divider -->
             <div class="user-profile-dropdown-divider"></div>

@@ -18,4 +18,11 @@ export class DocumentService extends BaseService {
   deleteDocument(id: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/documents/${id}`);
   }
+
+  downloadFile(id: number): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/documents/download/${id}`, {
+      responseType: 'blob'
+    });
+  }
+
 }

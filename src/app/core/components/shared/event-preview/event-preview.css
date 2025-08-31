@@ -10,3 +10,12 @@
         border-radius 0.3s ease,
         background-color 0.3s ease;
 }
+
+.btn-delete-event{
+    padding: 5px;
+}
+
+.btn-delete-event:hover{
+    background-color: #f5c6cb;
+    border-radius: 10px;
+}

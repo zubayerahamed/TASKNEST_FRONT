@@ -306,12 +306,6 @@ export class CreateEvent implements OnInit, OnChanges {
       email: 'john.doe@example.com',
       avatar: '/assets/images/zubayer.jpg',
     },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      email: 'jane.smith@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
   ];
 
   removeParticipant(participantId: number) {

@@ -7,10 +7,11 @@ import { TodayPageStateService } from '../../../services/todaypage-state.service
 import { ProjectPageStateService } from '../../../services/porjectpage-state.service';
 import { DocumentService } from '../../../services/document.service';
 import { Document } from '../../../models/attached-file.model';
+import { ImagePreview } from "../image-preview/image-preview";
 
 @Component({
   selector: 'app-event-preview',
-  imports: [],
+  imports: [ImagePreview],
   templateUrl: './event-preview.html',
   styleUrl: './event-preview.css',
 })
@@ -25,6 +26,28 @@ export class EventPreview {
   private projectPageStateService = inject(ProjectPageStateService);
   private documentService = inject(DocumentService);
 
+  deleteEvent(event: Event){
+    this.eventService.deleteEvent(event.id).subscribe({
+      next: (resData) => {
+        this.alertService.success("Success!", "Event deleted successfully");
+
+        const index = this.events.findIndex(e => e.id === event.id);
+        if (index > -1) {
+          this.events.splice(index, 1);
+        }
+
+        this.sidebarStateService.updateSidebarProjects(null);
+        this.sidebarStateService.updatePageCounts(null);
+        //this.todayPageStageService.updateTodayPage(null);
+        //this.projectPageStateService.updateProjectPage(null);
+      },
+      error: (err) => {
+        console.log(err);
+        this.alertService.error("Error!", "Event deletion failed");
+      }
+    });
+  }
+
   completeEvent(event: Event) {
     if (event.isCompleted) {
       return; // Already completed
@@ -33,11 +56,17 @@ export class EventPreview {
     this.eventService.markCompleteEvent(event.id).subscribe({
       next: (response) => {
         event.isCompleted = true;
+
+        const index = this.events.findIndex(e => e.id === event.id);
+        if (index > -1) {
+          this.events.splice(index, 1);
+        }
+
         this.alertService.success('Success!', 'Event marked as complete.');
         this.sidebarStateService.updateSidebarProjects(null);
         this.sidebarStateService.updatePageCounts(null);
-        this.todayPageStageService.updateTodayPage(null);
-        this.projectPageStateService.updateProjectPage(null);
+        // this.todayPageStageService.updateTodayPage(null);
+        // this.projectPageStateService.updateProjectPage(null);
       },
       error: (error) => {
         console.error('Error completing event:', error);
@@ -54,11 +83,17 @@ export class EventPreview {
     this.eventService.markInCompleteEvent(event.id).subscribe({
       next: (response) => {
         event.isCompleted = false;
+
+        const index = this.events.findIndex(e => e.id === event.id);
+        if (index > -1) {
+          this.events.splice(index, 1);
+        }
+
         this.alertService.success('Success!', 'Event marked as incomplete.');
         this.sidebarStateService.updateSidebarProjects(null);
         this.sidebarStateService.updatePageCounts(null);
-        this.todayPageStageService.updateTodayPage(null);
-        this.projectPageStateService.updateProjectPage(null);
+        // this.todayPageStageService.updateTodayPage(null);
+        // this.projectPageStateService.updateProjectPage(null);
       },
       error: (error) => {
         console.error('Error completing event:', error);
@@ -217,6 +252,18 @@ export class EventPreview {
       error: (err) => {
         console.log(err);
         this.alertService.error('Error!', 'Cant remove the document');
+      }
+    });
+  }
+
+  getImageUrl(id: number, elementId: string){
+    this.documentService.downloadFile(id).subscribe(blob => {
+      const url = window.URL.createObjectURL(blob);
+
+      // Find the image element and set its src
+      const imgElement = document.getElementById(elementId) as HTMLImageElement;
+      if (imgElement) {
+        imgElement.src = url;
       }
     });
   }

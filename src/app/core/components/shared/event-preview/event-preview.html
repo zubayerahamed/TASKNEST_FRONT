@@ -69,11 +69,23 @@
 
                 <!-- Attached Files Display -->
                 @if(event.documents && event.documents.length > 0){
-                    <div class="attached-files-container">
+                    <div class="attached-files-container m-0">
                     @for (file of event.documents; track file.id) {
                         <div class="attached-file-item">
                             <div class="file-icon">
-                                {{ getFileIcon(file.docExt) }}
+                                @if(file.docExt === '.png' || file.docExt === '.jpg' || file.docExt === '.jpeg' || file.docExt === '.gif'){
+                                    <app-image-preview 
+                                        [fileId]="file.id"
+                                        [fileName]="file.title"
+                                        [fileSize]="file.docSize"
+                                        [width]="'100%'"
+                                        [height]="'100%'"
+                                    />
+
+                                    <!-- <img [src]="imageUrl" [selector]="app-image-preview" [style.width]="width" [style.height]="height"/> -->
+                                } @else {
+                                    {{ getFileIcon(file.docExt) }}
+                                }
                             </div>
                             <div class="file-info">
                                 <div class="file-name">{{ file.title }}</div>
@@ -87,6 +99,9 @@
                     </div>
                 }
 
+            </div>
+            <div (click)="deleteEvent(event)">
+                <i class="btn-delete-event ph ph-trash text-danger"></i>
             </div>
         </div>
     } @else {
@@ -155,6 +170,41 @@
                         </div>
                     </div>
                 }
+
+                <!-- Attached Files Display -->
+                @if(event.documents && event.documents.length > 0){
+                    <div class="attached-files-container m-0">
+                    @for (file of event.documents; track file.id) {
+                        <div class="attached-file-item">
+                            <div class="file-icon">
+                                @if(file.docExt === '.png' || file.docExt === '.jpg' || file.docExt === '.jpeg' || file.docExt === '.gif'){
+                                    <app-image-preview 
+                                        [fileId]="file.id"
+                                        [fileName]="file.title"
+                                        [fileSize]="file.docSize"
+                                        [width]="'100%'"
+                                        [height]="'100%'"
+                                    />
+
+                                    <!-- <img [src]="imageUrl" [selector]="app-image-preview" [style.width]="width" [style.height]="height"/> -->
+                                } @else {
+                                    {{ getFileIcon(file.docExt) }}
+                                }
+                            </div>
+                            <div class="file-info">
+                                <div class="file-name">{{ file.title }}</div>
+                                <div class="file-size">{{ formatFileSize(file.docSize) }}</div>
+                            </div>
+                            <button type="button" class="file-remove-btn" (click)="removeFile(file, event.documents)">
+                                <i class="ph ph-trash"></i>
+                            </button>
+                        </div>
+                    }
+                    </div>
+                }
+            </div>
+            <div (click)="deleteEvent(event)">
+                <i class="btn-delete-event ph ph-trash text-danger"></i>
             </div>
         </div>
     } 

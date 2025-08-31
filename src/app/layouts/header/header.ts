@@ -1,15 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthHelper } from '../../core/helpers/auth.helper';
+import { PushNotificationService } from '../../core/services/push-notification.service';
 
 @Component({
   selector: 'app-header',
   imports: [CommonModule, RouterLink],
   templateUrl: './header.html',
-  styleUrl: './header.css'
+  styleUrl: './header.css',
 })
 export class Header {
-  @Input({required : true}) appTitle!: string;
+  @Input({ required: true }) appTitle!: string;
   @Input() isUserProfileDropdownOpen = false;
   @Input() currentUser = {
     name: 'Zubayer Ahamed',
@@ -24,7 +26,9 @@ export class Header {
   @Output() logout = new EventEmitter<void>();
   @Output() toggleSidebar = new EventEmitter<void>();
 
-  onToggleUserProfileDropdown(){
+  private pushService = inject(PushNotificationService);
+
+  onToggleUserProfileDropdown() {
     this.toggleUserProfileDropdown.emit();
   }
 
@@ -38,15 +42,38 @@ export class Header {
     }
   }
 
-  onOpenProfileSettings(){
+  onOpenProfileSettings() {
     this.openProfileSettings.emit();
   }
 
-  onLogout(){
+  onLogout() {
     this.logout.emit();
   }
 
   onToggleSidebar() {
     this.toggleSidebar.emit();
   }
+
+  private urlBase64ToUint8Array(base64String: string) {
+    const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/-/g, '+')
+      .replace(/_/g, '/');
+    const rawData = atob(base64);
+    return new Uint8Array([...rawData].map((char) => char.charCodeAt(0)));
+  }
+
+  allowPushNotification() {
+    const userId = AuthHelper.getJwtPayloads()?.sub;
+    if(userId == null) return;
+
+    console.log(userId);
+
+    this.pushService.registerServiceWorker();
+
+    // this.pushService.subscribeToPush(userId)
+    //   .then(() => alert("✅ Subscribed"))
+    //   .catch(err => console.error("❌ Subscription failed", err));
+  }
+
 }

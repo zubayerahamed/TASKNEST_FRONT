@@ -1108,7 +1108,7 @@ MODAL STYLES
 }
 
 .attach-file-section {
-  margin-top: 8px;
+  margin-top: 13px;
 }
 
 .file-input {
@@ -1226,7 +1226,7 @@ MODAL STYLES
   right: 0;
   z-index: 1100;
   margin-top: 8px;
-  min-width: 260px;
+  min-width: 280px;
   background: white;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
