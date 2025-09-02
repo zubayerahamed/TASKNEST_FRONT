@@ -100,6 +100,9 @@
                 }
 
             </div>
+            <div (click)="editEvent(event)">
+                <i class="btn-edit-event ph ph-pencil-simple-line text-primary"></i>
+            </div>
             <div (click)="deleteEvent(event)">
                 <i class="btn-delete-event ph ph-trash text-danger"></i>
             </div>
@@ -203,9 +206,18 @@
                     </div>
                 }
             </div>
+            <div (click)="editEvent(event)">
+                <i class="btn-edit-event ph ph-pencil-simple-line text-primary"></i>
+            </div>
             <div (click)="deleteEvent(event)">
                 <i class="btn-delete-event ph ph-trash text-danger"></i>
             </div>
         </div>
-    } 
+    }
 }
+
+<app-edit-event
+    [event]="selectedEvent"
+    [openEditEventModal]="openEditEventModal"
+    (closeEventModal)="onCloseEventModal()"
+/>

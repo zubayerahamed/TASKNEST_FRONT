@@ -1,22 +1,23 @@
 import { Component, inject, Input } from '@angular/core';
-import { Event, EventChecklist } from '../../../models/event.model';
-import { EventService } from '../../../services/event.service';
+import { EditEvent } from "../../../../events/edit-event/edit-event";
+import { Document } from '../../../models/attached-file.model';
+import { EventChecklist, EventDto } from '../../../models/event.model';
 import { AlertService } from '../../../services/alert.service';
+import { DocumentService } from '../../../services/document.service';
+import { EventService } from '../../../services/event.service';
+import { ProjectPageStateService } from '../../../services/porjectpage-state.service';
 import { SidebarStateService } from '../../../services/sidebar-state.service';
 import { TodayPageStateService } from '../../../services/todaypage-state.service';
-import { ProjectPageStateService } from '../../../services/porjectpage-state.service';
-import { DocumentService } from '../../../services/document.service';
-import { Document } from '../../../models/attached-file.model';
 import { ImagePreview } from "../image-preview/image-preview";
 
 @Component({
   selector: 'app-event-preview',
-  imports: [ImagePreview],
+  imports: [ImagePreview, EditEvent],
   templateUrl: './event-preview.html',
   styleUrl: './event-preview.css',
 })
 export class EventPreview {
-  @Input() events!: Event[];
+  @Input() events!: EventDto[];
   @Input() ignoreCompleted!: boolean;
 
   private eventService = inject(EventService);
@@ -26,7 +27,7 @@ export class EventPreview {
   private projectPageStateService = inject(ProjectPageStateService);
   private documentService = inject(DocumentService);
 
-  deleteEvent(event: Event){
+  deleteEvent(event: EventDto){
     this.eventService.deleteEvent(event.id).subscribe({
       next: (resData) => {
         this.alertService.success("Success!", "Event deleted successfully");
@@ -48,7 +49,7 @@ export class EventPreview {
     });
   }
 
-  completeEvent(event: Event) {
+  completeEvent(event: EventDto) {
     if (event.isCompleted) {
       return; // Already completed
     }
@@ -75,7 +76,7 @@ export class EventPreview {
     });
   }
 
-  inCompleteEvent(event: Event) {
+  inCompleteEvent(event: EventDto) {
     if (!event.isCompleted) {
       return; // Already incompleted
     }
@@ -266,5 +267,18 @@ export class EventPreview {
         imgElement.src = url;
       }
     });
+  }
+
+
+  public openEditEventModal = false;
+  public selectedEvent: EventDto | null = null;
+  editEvent(event: EventDto){
+    this.openEditEventModal = true;
+    this.selectedEvent = event;
+  }
+
+  onCloseEventModal(){
+    this.openEditEventModal = false;
+    this.selectedEvent = null;
   }
 }

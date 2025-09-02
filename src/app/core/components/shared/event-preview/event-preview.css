@@ -19,3 +19,12 @@
     background-color: #f5c6cb;
     border-radius: 10px;
 }
+
+.btn-edit-event{
+    padding: 5px;
+}
+
+.btn-edit-event:hover{
+    background-color: #c6ccf5;
+    border-radius: 10px;
+}

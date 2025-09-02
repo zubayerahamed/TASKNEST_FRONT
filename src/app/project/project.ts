@@ -1,7 +1,7 @@
 import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { EventPreview } from "../core/components/shared/event-preview/event-preview";
-import { Event } from '../core/models/event.model';
+import { EventDto } from '../core/models/event.model';
 import { EventService } from '../core/services/event.service';
 import { ProjectPageStateService } from '../core/services/porjectpage-state.service';
 
@@ -23,7 +23,7 @@ export class Project implements OnInit {
   private eventService = inject(EventService);
   private projectPageStateService = inject(ProjectPageStateService);
 
-  public events: Event[] = [];
+  public events: EventDto[] = [];
 
   ngOnInit() {
     const subscription = this.activatedRoute.params.subscribe({

@@ -1,8 +1,8 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { PageDetail } from '../core/components/shared/page-detail/page-detail';
+import { EventDto } from '../core/models/event.model';
 import { PageService } from '../core/services/page.service';
 import { TodayPageStateService } from '../core/services/todaypage-state.service';
-import { Event } from '../core/models/event.model';
-import { PageDetail } from '../core/components/shared/page-detail/page-detail';
 
 @Component({
   selector: 'app-completed',
@@ -21,8 +21,8 @@ export class Completed implements OnInit {
   private pageService = inject(PageService);
   private todayPageStageService = inject(TodayPageStateService);
 
-  public events: Event[] = [];
-  public groupedEvents: { [key: string]: Event[] } = {};
+  public events: EventDto[] = [];
+  public groupedEvents: { [key: string]: EventDto[] } = {};
   
   ngOnInit(): void {
     const todayPageSubscription = this.todayPageStageService.todayPageUpdate$.subscribe({
@@ -50,7 +50,7 @@ export class Completed implements OnInit {
     });
   }
 
-  groupEventsByProjectName(events: Event[]): { [key: string]: Event[] } {
+  groupEventsByProjectName(events: EventDto[]): { [key: string]: EventDto[] } {
     return events.reduce((groupedEvents, event) => {
       const projectName = event.projectName;
       if (!groupedEvents[projectName]) {
@@ -58,6 +58,6 @@ export class Completed implements OnInit {
       }
       groupedEvents[projectName].push(event);
       return groupedEvents;
-    }, {} as { [key: string]: Event[] });
+    }, {} as { [key: string]: EventDto[] });
   }
 }

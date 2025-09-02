@@ -1,6 +1,6 @@
 import { Document } from "./attached-file.model";
 
-export interface Event {
+export interface EventDto {
   id: number;
   projectId: number;
   categoryId: number;

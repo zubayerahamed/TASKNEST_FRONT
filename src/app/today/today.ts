@@ -1,6 +1,6 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { PageDetail } from "../core/components/shared/page-detail/page-detail";
-import { Event } from '../core/models/event.model';
+import { EventDto } from '../core/models/event.model';
 import { PageService } from '../core/services/page.service';
 import { TodayPageStateService } from '../core/services/todaypage-state.service';
 
@@ -22,8 +22,8 @@ export class Today implements OnInit {
   private pageService = inject(PageService);
   private todayPageStageService = inject(TodayPageStateService);
 
-  public events: Event[] = [];
-  public groupedEvents: { [key: string]: Event[] } = {};
+  public events: EventDto[] = [];
+  public groupedEvents: { [key: string]: EventDto[] } = {};
   
   ngOnInit(): void {
     const todayPageSubscription = this.todayPageStageService.todayPageUpdate$.subscribe({
@@ -51,7 +51,7 @@ export class Today implements OnInit {
     });
   }
 
-  groupEventsByProjectName(events: Event[]): { [key: string]: Event[] } {
+  groupEventsByProjectName(events: EventDto[]): { [key: string]: EventDto[] } {
     return events.reduce((groupedEvents, event) => {
       const projectName = event.projectName;
       if (!groupedEvents[projectName]) {
@@ -59,7 +59,7 @@ export class Today implements OnInit {
       }
       groupedEvents[projectName].push(event);
       return groupedEvents;
-    }, {} as { [key: string]: Event[] });
+    }, {} as { [key: string]: EventDto[] });
   }
 
 }

@@ -1,20 +1,20 @@
-import { Component, EventEmitter, Inject, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { Participant } from '../../core/models/participant.model';
-import { ChecklistItem } from '../../core/models/checklist-item.model';
-import { AttachedFile, Document } from '../../core/models/attached-file.model';
 import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ProjectService } from '../../core/services/project.service';
-import { Project } from '../../core/models/project.model';
-import { CategoryService } from '../../core/services/category.service';
+import { AttachedFile, Document } from '../../core/models/attached-file.model';
 import { Category } from '../../core/models/category.model';
-import { AddEvent } from '../../core/models/event.model';
-import { EventService } from '../../core/services/event.service';
+import { ChecklistItem } from '../../core/models/checklist-item.model';
+import { AddEvent, EventDto } from '../../core/models/event.model';
+import { Participant } from '../../core/models/participant.model';
+import { Project } from '../../core/models/project.model';
 import { AlertService } from '../../core/services/alert.service';
-import { SidebarStateService } from '../../core/services/sidebar-state.service';
-import { ProjectPageStateService } from '../../core/services/porjectpage-state.service';
-import { TodayPageStateService } from '../../core/services/todaypage-state.service';
+import { CategoryService } from '../../core/services/category.service';
 import { DocumentService } from '../../core/services/document.service';
+import { EventService } from '../../core/services/event.service';
+import { ProjectPageStateService } from '../../core/services/porjectpage-state.service';
+import { ProjectService } from '../../core/services/project.service';
+import { SidebarStateService } from '../../core/services/sidebar-state.service';
+import { TodayPageStateService } from '../../core/services/todaypage-state.service';
 
 @Component({
   selector: 'app-create-event',
@@ -99,7 +99,7 @@ export class CreateEvent implements OnInit, OnChanges {
     });
   }
 
-  onProjectChange(event: Event) {
+  onProjectChange(event: EventDto) {
     if(this.selectedProjectId == null) return;
 
     // Fetch the categories for the selected project. 
