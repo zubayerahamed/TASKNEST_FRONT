@@ -73,6 +73,8 @@ export class CreateEvent implements OnInit, OnChanges {
   initializeDateTime(){
     const now = new Date();
 
+    this.enteredEventDate = now.toISOString().split('T')[0];
+
     // Format as HH:mm for <input type="time">
     const hours = now.getHours().toString().padStart(2, '0');
     const minutes = now.getMinutes().toString().padStart(2, '0');

@@ -131,98 +131,203 @@
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      <!-- Divider -->
-                      <div class="mb-3"></div>
+                    <!-- Divider -->
+                    <div class="mb-3"></div>
 
-                      <div class="row">
-                        <!-- Checklist Section -->
-                        <div class="col-md-6 mb-3">
-                          <label class="form-label d-flex align-items-center justify-content-between">
-                            <span class="d-flex align-items-center">
-                              <i class="ph ph-list-checks me-2"></i>Checklist
-                            </span>
-                            @if (checklistItems.length > 0) {
-                              <span class="checklist-progress-info">
-                                <!-- {{ completedChecklistCount }}/{{ checklistItems.length }} completed ({{ checklistProgress }}%) -->
-                              </span>
-                            }
-                          </label>
-
-                          <!-- Progress Bar -->
+                    <div class="row">
+                      <!-- Checklist Section -->
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label d-flex align-items-center justify-content-between">
+                          <span class="d-flex align-items-center">
+                            <i class="ph ph-list-checks me-2"></i>Checklist
+                          </span>
                           @if (checklistItems.length > 0) {
-                            <div class="progress mb-3">
-                              <div
-                                  class="progress-bar bg-success"
-                                  role="progressbar"
-                                  [style.width.%]="checklistProgress"
-                                  [attr.aria-valuenow]="checklistProgress"
-                                  aria-valuemin="0"
-                                  aria-valuemax="100">
-                              </div>
-                            </div>
+                            <span class="checklist-progress-info">
+                              <!-- {{ completedChecklistCount }}/{{ checklistItems.length }} completed ({{ checklistProgress }}%) -->
+                            </span>
                           }
-                          
+                        </label>
 
-                          <!-- Add New Checklist Item -->
-                          <div class="add-checklist-section mb-3">
-                            <div class="input-group">
-                              <input
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Add checklist item..."
-                                    [value]="newChecklistItem"
-                                    (input)="onChecklistInputChange($event)"
-                                    (keypress)="onChecklistInputKeyPress($event)">
-                              <button
-                                      type="button"
-                                      class="btn btn-outline-secondary"
-                                      (click)="addChecklistItem()"
-                                      [disabled]="!newChecklistItem.trim()">
-                                <i class="ph ph-plus"></i>
-                              </button>
+                        <!-- Progress Bar -->
+                        @if (checklistItems.length > 0) {
+                          <div class="progress mb-3">
+                            <div
+                                class="progress-bar bg-success"
+                                role="progressbar"
+                                [style.width.%]="checklistProgress"
+                                [attr.aria-valuenow]="checklistProgress"
+                                aria-valuemin="0"
+                                aria-valuemax="100">
                             </div>
                           </div>
+                        }
+                        
 
-                          <!-- Checklist Items -->
-                          @if(checklistItems.length > 0){
-                            <div class="checklist-items-container">
-                              @for (item of checklistItems; track item.id) {
-                                <div class="checklist-item d-flex align-items-center justify-content-between">
-                                  <div class="d-flex align-items-center fex-grow-1">
-                                    <input
-                                          class="form-check-input me-2 mt-0"
-                                          type="checkbox"
-                                          [id]="'checklist-' + item.id"
-                                          [checked]="item.completed"
-                                          (change)="toggleChecklistItem(item.id)">
-                                    <label
-                                          class="form-check-label"
-                                          [for]="'checklist-' + item.id"
-                                          [class.text-decoration-line-through]="item.completed"
-                                          [class.text-muted]="item.completed">
-                                      {{ item.text }}
-                                    </label>
-                                  </div>
-                                  <button
-                                          type="button"
-                                          class="checklist-remove-btn"
-                                          (click)="removeChecklistItem(item.id)">
-                                    <i class="ph ph-x"></i>
-                                  </button>
-                                </div>
-                              }
-                            </div>
-                          }
+                        <!-- Add New Checklist Item -->
+                        <div class="add-checklist-section mb-3">
+                          <div class="input-group">
+                            <input
+                                  type="text"
+                                  class="form-control"
+                                  placeholder="Add checklist item..."
+                                  [value]="newChecklistItem"
+                                  (input)="onChecklistInputChange($event)"
+                                  (keypress)="onChecklistInputKeyPress($event)">
+                            <button
+                                    type="button"
+                                    class="btn btn-outline-secondary"
+                                    (click)="addChecklistItem()"
+                                    [disabled]="!newChecklistItem.trim()">
+                              <i class="ph ph-plus"></i>
+                            </button>
+                          </div>
                         </div>
+
+                        <!-- Checklist Items -->
+                        @if(checklistItems.length > 0){
+                          <div class="checklist-items-container">
+                            @for (item of checklistItems; track item.id) {
+                              <div class="checklist-item d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center fex-grow-1">
+                                  <input
+                                        class="form-check-input me-2 mt-0"
+                                        type="checkbox"
+                                        [id]="'checklist-' + item.id"
+                                        [checked]="item.completed"
+                                        (change)="toggleChecklistItem(item.id)">
+                                  <label
+                                        class="form-check-label"
+                                        [for]="'checklist-' + item.id"
+                                        [class.text-decoration-line-through]="item.completed"
+                                        [class.text-muted]="item.completed">
+                                    {{ item.text }}
+                                  </label>
+                                </div>
+                                <button
+                                        type="button"
+                                        class="checklist-remove-btn"
+                                        (click)="removeChecklistItem(item.id)">
+                                  <i class="ph ph-x"></i>
+                                </button>
+                              </div>
+                            }
+                          </div>
+                        }
                       </div>
 
+                      <!-- File Attachments Section -->
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label d-flex align-items-center mb-2">
+                          <i class="ph ph-paperclip me-2"></i>Attachments
+                        </label>
 
+                        <!-- Add File Button -->
+                        <div class="attach-file-section">
+                          <input
+                                type="file"
+                                id="fileInput"
+                                class="file-input"
+                                multiple
+                                (change)="onFileSelect($event)"
+                                #fileInput>
+                          <button
+                                  type="button"
+                                  class="btn btn-outline-secondary attach-file-btn d-flex align-items-center"
+                                  (click)="fileInput.click()">
+                            <i class="ph ph-plus me-1"></i><span>Attach file</span>
+                          </button>
+                        </div>
 
+                        <!-- Attached Files Display -->
+                        @if(attachedFiles.length > 0){
+                          <div class="attached-files-container mt-3">
+                            @for (file of attachedFiles; track file.id) {
+                              <div class="attached-file-item">
+                                <div class="file-icon">
+                                  {{ file.icon }}
+                                </div>
+                                <div class="file-info">
+                                  <div class="file-name">{{ file.name }}</div>
+                                  <div class="file-size">{{ formatFileSize(file.size) }}</div>
+                                </div>
+                                <button type="button" class="file-remove-btn" (click)="removeFile(file.id)">
+                                  <i class="ph ph-trash"></i>
+                                </button>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
 
-
-            
                     </div>
+
+                    <!-- Divider -->
+                    <div class="mb-3"></div>
+
+                    <div class="mb-3">
+                      <label class="form-label"><i class="ph ph-users-three me-2"></i>Participants</label>
+                      <div class="d-flex align-items-center gap-3 flex-wrap">
+                        @for(participant of selectedParticipants; track participant.id) {
+                          <div class="participant-item">
+                            <img
+                                 [src]="participant.avatar"
+                                 class="rounded-circle participant-avatar"
+                                 [alt]="participant.name"
+                                 [title]="participant.name + ' - ' + participant.email"
+                                 data-bs-toggle="tooltip"
+                                 data-bs-placement="top">
+                            <button type="button" class="participant-remove-btn" (click)="removeParticipant(participant.id)">
+                              <i class="ph ph-x"></i>
+                            </button>
+                          </div>
+                          }
+                          <div class="participant-search-container">
+                            <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center"
+                                    (click)="openParticipantSearch()">
+                              <i class="ph ph-plus me-1"></i><span>Add Participant</span>
+                            </button>
+            
+                            <!-- Participant Search Dropdown -->
+                            <div class="participant-search-dropdown" *ngIf="isParticipantSearchOpen">
+                              <div class="participant-search-header">
+                                <input
+                                       type="text"
+                                       class="form-control participant-search-input"
+                                       placeholder="Search participants..."
+                                       [value]="participantSearchQuery"
+                                       (input)="onParticipantSearchInput($event)"
+                                       #searchInput>
+                                <button type="button" class="btn-close-search" (click)="closeParticipantSearch()">
+                                  <i class="ph ph-x"></i>
+                                </button>
+                              </div>
+                              <div class="participant-search-results">
+                                @for(participant of filteredParticipants; track participant.id) {
+                                  <div class="participant-search-item"
+                                       (click)="addParticipant(participant)">
+                                    <img [src]="participant.avatar" class="rounded-circle participant-search-avatar"
+                                         [alt]="participant.name">
+                                    <div class="participant-info">
+                                      <div class="participant-name">{{ participant.name }}</div>
+                                      <div class="participant-email">{{ participant.email }}</div>
+                                    </div>
+                                  </div>
+            
+                                  }
+            
+                                  @if(filteredParticipants.length === 0) {
+                                    <div class="no-participants">
+                                      No participants found
+                                    </div>
+                                    }
+                              </div>
+                            </div>
+                          </div>
+                      </div>
+                    </div>
+
                 </form>
             </div>
 
