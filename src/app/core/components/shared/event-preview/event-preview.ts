@@ -5,9 +5,7 @@ import { EventChecklist, EventDto } from '../../../models/event.model';
 import { AlertService } from '../../../services/alert.service';
 import { DocumentService } from '../../../services/document.service';
 import { EventService } from '../../../services/event.service';
-import { ProjectPageStateService } from '../../../services/porjectpage-state.service';
 import { SidebarStateService } from '../../../services/sidebar-state.service';
-import { TodayPageStateService } from '../../../services/todaypage-state.service';
 import { ImagePreview } from "../image-preview/image-preview";
 
 @Component({
@@ -23,8 +21,6 @@ export class EventPreview {
   private eventService = inject(EventService);
   private alertService = inject(AlertService);
   private sidebarStateService = inject(SidebarStateService);
-  private todayPageStageService = inject(TodayPageStateService);
-  private projectPageStateService = inject(ProjectPageStateService);
   private documentService = inject(DocumentService);
 
   deleteEvent(event: EventDto){
