@@ -7,6 +7,13 @@ export interface Workspace {
   isPrimary: boolean;
   isAdmin: boolean;
   isCollaborator: boolean;
+  isWeekendSat: boolean;
+  isWeekendSun: boolean;
+  isWeekendMon: boolean;
+  isWeekendTue: boolean;
+  isWeekendWed: boolean;
+  isWeekendThu: boolean;
+  isWeekendFri: boolean;
 }
 
 export interface AddWorkspace {

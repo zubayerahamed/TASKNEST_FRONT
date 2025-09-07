@@ -10,7 +10,7 @@ body{
   margin: 5px 0px 5px 0px;
 }
 .divider{
-  border-bottom: 1px dotted black;
+  border-bottom: 1px solid rgb(235, 241, 245);
   margin: 5px 0px 5px 0px;
 }
 a.page-link{

@@ -26,6 +26,8 @@ import { AuthHelper } from '../core/helpers/auth.helper';
 import { CreateProject } from '../project/create-project/create-project';
 import { WorkspaceService } from '../core/services/workspace.service';
 import { JwtPayload } from 'jwt-decode';
+import { CreateEventRepeater } from "../events/create-event-repeater/create-event-repeater";
+import { RepeaterStateService } from '../core/services/repeater-state.service';
 
 @Component({
   selector: 'app-layouts',
@@ -42,7 +44,8 @@ import { JwtPayload } from 'jwt-decode';
     CreateTask,
     CreateWorkspace,
     CreateProject,
-  ],
+    CreateEventRepeater
+],
 })
 export class Layouts implements OnInit {
   appTitle: string = 'TASKNEST';
@@ -50,7 +53,7 @@ export class Layouts implements OnInit {
 
   private authService = inject(AuthService);
   private workspaceService = inject(WorkspaceService);
-
+  private repeaterStateService = inject(RepeaterStateService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
@@ -63,9 +66,27 @@ export class Layouts implements OnInit {
     // Initialize Route
     this.initializeRoute();
 
+    // Repeater 
+    this.repeaterStateService.isModalOpen$.subscribe(data => {
+      if(data === 'OPEN'){
+        this.openRepeaterModal();
+      } else {
+        this.closeRepeaterModal();
+      }
+    });
+
     // Load workspaces here
     this.loadCurrentWorkspace();
     this.loadAvailableWorkspaces();
+  }
+
+  // Repeater modal
+  public isRepeaterModalOpen = false;
+  openRepeaterModal(){
+    this.isRepeaterModalOpen = true;
+  }
+  closeRepeaterModal(){
+    this.isRepeaterModalOpen = false;
   }
 
   // choose default route at the very beginning

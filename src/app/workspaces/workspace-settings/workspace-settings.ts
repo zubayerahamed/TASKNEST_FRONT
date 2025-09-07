@@ -43,7 +43,7 @@ export class WorkspaceSettings implements OnInit {
   public eventCategories: Category[] = [];
   public defaultTaskCategory?: Category;
   public defaultEventCategory?: Category;
-  public workspace!: Workspace;
+  public workspace?: Workspace;
   public enteredWorkspaceName: string = "";
   public systemDefinedWorkflow?: Workflow;
 
@@ -94,12 +94,51 @@ export class WorkspaceSettings implements OnInit {
     this.workspaceService.findWorkspace(workspaceId).subscribe({
       next: (resData) => {
         this.workspace = resData.data;
+        console.log(this.workspace);
         this.enteredWorkspaceName = this.workspace!.name;
       }, 
       error: (resErr) => {
         console.error(resErr);
       }
     });
+  }
+
+  onWeekendChange(event: Event, workspace?: Workspace) {
+    if(workspace == null) return;
+    const checkbox = event.target as HTMLInputElement;
+
+    if("SAT" === checkbox.id){
+      workspace.isWeekendSat = checkbox.checked;
+    } else if("SUN" === checkbox.id){
+      workspace.isWeekendSun = checkbox.checked;
+    } else if("MON" === checkbox.id){
+      workspace.isWeekendMon = checkbox.checked;
+    } else if("TUE" === checkbox.id){
+      workspace.isWeekendTue = checkbox.checked;
+    } else if("WED" === checkbox.id){
+      workspace.isWeekendWed = checkbox.checked;
+    } else if("THU" === checkbox.id){
+      workspace.isWeekendThu = checkbox.checked;
+    } else if("FRI" === checkbox.id){
+      workspace.isWeekendFri = checkbox.checked;
+    } 
+
+    this.workspaceService.updateWorkspaceWeekend(checkbox.id, checkbox.checked ? "CHECKED" : "UNCHECKED").subscribe({
+      next: (resData) => {
+        this.alertService.success('Success!', 'Workspace weekend updated successfully');
+        this.workspace = resData.data;
+        this.enteredWorkspaceName = this.workspace!.name;
+        
+        // Use WorkspaceStateService to update workspace name
+        // This will automatically notify all subscribers (like left-sidebar)
+        this.workspaceStateService.updateWorkspaceName(this.workspace!.name);
+      },
+      error: (resErr) => {
+        console.error(resErr);
+        this.alertService.error('Error!', 'Workspace weekend updated failed');
+      }
+    });
+
   }
 
   onUpdateWorkspace(){

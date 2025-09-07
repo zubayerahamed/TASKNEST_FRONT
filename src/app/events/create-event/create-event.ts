@@ -15,6 +15,7 @@ import { ProjectPageStateService } from '../../core/services/porjectpage-state.s
 import { ProjectService } from '../../core/services/project.service';
 import { SidebarStateService } from '../../core/services/sidebar-state.service';
 import { TodayPageStateService } from '../../core/services/todaypage-state.service';
+import { RepeaterStateService } from '../../core/services/repeater-state.service';
 
 @Component({
   selector: 'app-create-event',
@@ -34,6 +35,7 @@ export class CreateEvent implements OnInit, OnChanges {
   private projectPageStateService = inject(ProjectPageStateService);
   private todayPageStageService = inject(TodayPageStateService);
   private documentService = inject(DocumentService);
+  private repeaterStateService = inject(RepeaterStateService);
 
   public projects: Project[] = [];
   public categories: Category[] = [];
@@ -68,6 +70,10 @@ export class CreateEvent implements OnInit, OnChanges {
       this.initializeDateTime();
       this.loadProjects();
     }
+  }
+
+  onOpenRepeater(){
+    this.repeaterStateService.updateModalStatus('OPEN');
   }
 
   initializeDateTime(){

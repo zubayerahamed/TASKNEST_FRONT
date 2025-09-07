@@ -7,9 +7,14 @@
         <i class="ph ph-calendar-plus me-2 fs-4"></i>
         <h4 class="modal-title">Create New Event</h4>
       </div>
-      <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="closeAddEventModal()">
-        <i class="ph ph-x fs-4"></i>
-      </button>
+      <div class="d-flex align-items-center gap-4">
+        <button class="btn btn-sm btn-secondary" (click)="onOpenRepeater()">
+          <i class="ph ph-repeat"></i> Set Repeater
+        </button>
+        <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="closeAddEventModal()">
+          <i class="ph ph-x fs-4"></i>
+        </button>
+      </div>
     </div>
     
     <div class="modal-body flex-grow-1">
@@ -337,3 +342,6 @@
     </div>
   </div>
 </div>
+
+
+

@@ -37,4 +37,7 @@ export class WorkspaceService extends BaseService {
     return this.http.delete(`${this.baseUrl}/workspaces/${id}`);
   }
 
+  updateWorkspaceWeekend(day: string, status: string): Observable<any> {
+    return this.http.put(`${this.baseUrl}/workspaces/weekends/${day}/${status}`, null);
+  }
 }

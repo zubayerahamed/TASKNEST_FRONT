@@ -9,6 +9,40 @@
   </div>
 </div>
 <div class="divider"></div>
+  <div class="col-md-3">
+    <div class="mb-3">
+      <label for="workspaceName" class="form-label fw-bold text-muted">Update Weekends</label>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="SUN" [checked]="workspace?.isWeekendSun" (change)="onWeekendChange($event, workspace)">
+      <label class="form-check-label" for="SUN" name="SUN">Sunday</label>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="MON" [checked]="workspace?.isWeekendMon" (change)="onWeekendChange($event, workspace)">
+      <label class="form-check-label" for="MON" name="MON">Monday</label>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="TUE" [checked]="workspace?.isWeekendTue" (change)="onWeekendChange($event, workspace)">
+      <label class="form-check-label" for="TUE" name="TUE">Tuesday</label>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="WED" [checked]="workspace?.isWeekendWed" (change)="onWeekendChange($event, workspace)">
+      <label class="form-check-label" for="WED" name="WED">Wednasday</label>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="THU" [checked]="workspace?.isWeekendThu" (change)="onWeekendChange($event, workspace)">
+      <label class="form-check-label" for="THU" name="THU">Thursday</label>
+    </div>
+    <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="FRI" [checked]="workspace?.isWeekendFri" (change)="onWeekendChange($event, workspace)">
+      <label class="form-check-label" for="FRI" name="FRI">Friday</label>
+    </div>
+     <div class="mb-3 form-check">
+      <input type="checkbox" class="form-check-input" id="SAT" [checked]="workspace?.isWeekendSat" (change)="onWeekendChange($event, workspace)">
+      <label class="form-check-label" for="SAT" name="SAT">Saturday</label>
+    </div>
+  </div>
+<div class="divider"></div>
 <div class="d-flex flex-column gap-3">
   <h5>Types & Colors</h5>
   <div class="mb-2">
