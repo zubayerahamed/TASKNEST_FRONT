@@ -24,12 +24,12 @@
                     <div class="col-md-3 mb-3">
                         <div class="input-group">
                             <span class="input-group-text"><i class="ph ph-minus"></i></span>
-                            <input type="text" class="form-control text-center" min="1">
+                            <input type="text" class="form-control text-center" min="1" [(ngModel)]="enteredRepeatEvery">
                             <span class="input-group-text"><i class="ph ph-plus"></i></span>
                         </div>
                     </div>
                     <div class="col-md-3 mb-3">
-                        <select class="form-select">
+                        <select class="form-select" [(ngModel)]="enteredRepeatType">
                             <option value="DAY">Day</option>
                             <option value="WEEK">Week</option>
                             <option value="MONTH">Month</option>
@@ -37,123 +37,161 @@
                         </select>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                            <label class="form-check-label form-label" for="flexCheckDefault">
-                                Skip Weekdends
-                            </label>
+                
+                @if(enteredRepeatType == 'DAY'){
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" [(ngModel)]="enteredSkipWeekends">
+                                <label class="form-check-label form-label" for="flexCheckDefault">
+                                    Skip Weekdends
+                                </label>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <label for="eventDate" class="form-label me-3">Days of week</label>
-                    <div class="col-md-12 mb-3">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="SAT" value="SAT">
-                            <label class="form-check-label" for="SAT">Sat</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="SUN" value="SUN">
-                            <label class="form-check-label" for="SUN">Sun</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="MON" value="MON">
-                            <label class="form-check-label" for="MON">Mon</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="TUE" value="TUE">
-                            <label class="form-check-label" for="TUE">Tue</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="WED" value="WED">
-                            <label class="form-check-label" for="WED">Wed</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="THU" value="THU">
-                            <label class="form-check-label" for="THU">Thu</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="checkbox" id="FRI" value="FRI">
-                            <label class="form-check-label" for="FRI">Fri</label>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
-                            <label class="form-check-label" for="inlineRadio1">Fixed date</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                            <label class="form-check-label" for="inlineRadio2">Weekday of month</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
-                            <label class="form-check-label" for="inlineRadio2">Weekday of year</label>
+                }
+                
+                @if(enteredRepeatType == 'WEEK'){
+                    <div class="row">
+                        <label for="eventDate" class="form-label me-3">Days of week</label>
+                        <div class="col-md-12 mb-3">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="SAT" value="SAT">
+                                <label class="form-check-label" for="SAT">Sat</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="SUN" value="SUN">
+                                <label class="form-check-label" for="SUN">Sun</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="MON" value="MON">
+                                <label class="form-check-label" for="MON">Mon</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="TUE" value="TUE">
+                                <label class="form-check-label" for="TUE">Tue</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="WED" value="WED">
+                                <label class="form-check-label" for="WED">Wed</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="THU" value="THU">
+                                <label class="form-check-label" for="THU">Thu</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="FRI" value="FRI">
+                                <label class="form-check-label" for="FRI">Fri</label>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <select class="form-select mb-3">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                        </select>
+                }
+                
+                @if(enteredRepeatType == 'MONTH' || enteredRepeatType == 'YEAR'){
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            @if (enteredRepeatType == 'MONTH' || enteredRepeatType == 'YEAR') {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="FIXED_DATE" [(ngModel)]="enteredDataType">
+                                    <label class="form-check-label" for="inlineRadio1">Fixed date</label>
+                                </div>
+                            }
+                            
+                            @if (enteredRepeatType == 'MONTH') {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="WEEK_DAY_OF_MONTH" [(ngModel)]="enteredDataType">
+                                    <label class="form-check-label" for="inlineRadio2">Weekday of month</label>
+                                </div>
+                            }
+                            
+                            @if (enteredRepeatType == 'YEAR') {
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="WEEK_DAY_OF_YEAR" [(ngModel)]="enteredDataType">
+                                    <label class="form-check-label" for="inlineRadio2">Weekday of year</label>
+                                </div>
+                            }
+                        </div>
+
+                        @if (enteredRepeatType == 'MONTH' && enteredDataType == 'FIXED_DATE') {
+                            <div class="col-md-12 p-2">
+                                @for (day of daysInMonth; track $index) {
+                                    <div class="custom-date-button">{{ day }}</div>
+                                }
+                            </div>
+                        }
+
+                        @if (enteredRepeatType == 'YEAR' && enteredDataType == 'FIXED_DATE') {
+                            <div class="col-md-3">
+                                <select class="form-select mb-3">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        }
+
+                        @if ((enteredRepeatType == 'MONTH' && enteredDataType == 'WEEK_DAY_OF_MONTH') || (enteredRepeatType == 'YEAR' && enteredDataType == 'WEEK_DAY_OF_YEAR')) {
+                            <div class="col-md-3">
+                                <select class="form-select mb-3">
+                                    <option value="FIRST">First</option>
+                                    <option value="SECOND">Second</option>
+                                    <option value="THIRD">Third</option>
+                                    <option value="FOURTH">Fourth</option>
+                                    <option value="FIFTH">Fifth</option>
+                                    <option value="LAST">Last</option>
+                                </select>
+                            </div>
+                        }
+
+                        @if ((enteredRepeatType == 'MONTH' && enteredDataType == 'WEEK_DAY_OF_MONTH') || (enteredRepeatType == 'YEAR' && enteredDataType == 'WEEK_DAY_OF_YEAR')) {
+                            <div class="col-md-3">
+                                <select class="form-select mb-3">
+                                    <option value="SAT">Saturday</option>
+                                    <option value="SUN">Sunday</option>
+                                    <option value="MON">Monday</option>
+                                    <option value="TUE">Tuesday</option>
+                                    <option value="WED">Wednsday</option>
+                                    <option value="THU">Thursday</option>
+                                    <option value="FRI">Friday</option>
+                                </select>
+                            </div>
+                        }
+
+                        @if ((enteredRepeatType == 'YEAR' && enteredDataType == 'FIXED_DATE') || (enteredRepeatType == 'YEAR' && enteredDataType == 'WEEK_DAY_OF_YEAR')) {
+                            <div class="col-md-3">
+                                <select class="form-select mb-3">
+                                    <option value="JAN">January</option>
+                                    <option value="FEB">February</option>
+                                    <option value="MAR">March</option>
+                                    <option value="APR">April</option>
+                                    <option value="MAY">May</option>
+                                    <option value="JUN">June</option>
+                                    <option value="JUL">July</option>
+                                    <option value="AUG">August</option>
+                                    <option value="SEP">September</option>
+                                    <option value="OCT">October</option>
+                                    <option value="NOV">November</option>
+                                    <option value="DEC">December</option>
+                                </select>
+                            </div>
+                        }
                     </div>
-                    <div class="col-md-3">
-                        <select class="form-select mb-3">
-                            <option value="FIRST">First</option>
-                            <option value="SECOND">Second</option>
-                            <option value="THIRD">Third</option>
-                            <option value="FOURTH">Fourth</option>
-                            <option value="FIFTH">Fifth</option>
-                            <option value="LAST">Last</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select mb-3">
-                            <option value="SAT">Saturday</option>
-                            <option value="SUN">Sunday</option>
-                            <option value="MON">Monday</option>
-                            <option value="TUE">Tuesday</option>
-                            <option value="WED">Wednsday</option>
-                            <option value="THU">Thursday</option>
-                            <option value="FRI">Friday</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select class="form-select mb-3">
-                            <option value="JAN">January</option>
-                            <option value="FEB">February</option>
-                            <option value="MAR">March</option>
-                            <option value="APR">April</option>
-                            <option value="MAY">May</option>
-                            <option value="JUN">June</option>
-                            <option value="JUL">July</option>
-                            <option value="AUG">August</option>
-                            <option value="SEP">September</option>
-                            <option value="OCT">October</option>
-                            <option value="NOV">November</option>
-                            <option value="DEC">December</option>
-                        </select>
-                    </div>
-                </div>
+                }       
 
                 <div class="divider mb-3"></div>
                 
                 <div class="row">
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <label for="eventDate" class="form-label">Start Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="eventDate" name="eventDate" required="">
+                            <label for="enteredStartDate" class="form-label">Start Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="enteredStartDate" name="enteredStartDate" required="" [(ngModel)]="enteredStartDate">
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="mb-3">
-                            <label for="eventDate" class="form-label">End Date <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="eventDate" name="eventDate" required="">
+                            <label for="enteredEndDate" class="form-label">End Date <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="enteredEndDate" name="enteredEndDate" required="" [(ngModel)]="enteredEndDate">
                         </div>
                     </div>
                 </div>
