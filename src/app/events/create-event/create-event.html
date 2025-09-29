@@ -20,7 +20,48 @@
     <div class="modal-body flex-grow-1">
       <form>
         <div class="row">
+          <!--Using ng-option and for loop-->
+
+
+          <!--Using items input-->
+          <ng-select [items]="cars"
+                    bindLabel="name"
+                    bindValue="id"
+                    [(ngModel)]="selectedCar">
+          </ng-select>
+          
+          <!-- <div class="ng-autocomplete">
+            <ng-autocomplete 
+              [data]="data"
+              [searchKeyword]="keyword"
+              (selected)='selectEvent($event)'
+              (inputChanged)='onChangeSearch($event)'
+              (inputFocused)='onFocused($event)'
+              [itemTemplate]="itemTemplate"
+              [notFoundTemplate]="notFoundTemplate">                                 
+            </ng-autocomplete>
+            
+            <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item.name"></a>
+            </ng-template>
+            
+            <ng-template #notFoundTemplate let-notFound>
+              <div [innerHTML]="notFound"></div>
+            </ng-template>
+          </div> -->
+
           <div class="col-md-6">
+            <div class="mb-3">
+              <label for="eventDate" class="form-label">Date <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" mwlFlatpickr [(ngModel)]="enteredEventDate" id="eventDate" name="eventDate"/>
+              @if (eventDateError) {
+                <span class="text-danger text-sm">{{ eventDateError }}</span>
+              }
+            </div>
+          </div>
+          
+
+          <!-- <div class="col-md-6">
             <div class="mb-3">
               <label for="eventDate" class="form-label">Date <span class="text-danger">*</span></label>
               <input type="date" class="form-control" id="eventDate" name="eventDate" [(ngModel)]="enteredEventDate" required="">
@@ -28,11 +69,23 @@
                 <span class="text-danger text-sm">{{ eventDateError }}</span>
               }
             </div>
-          </div>
+          </div> -->
+          
           <div class="col-md-3">
             <div class="mb-3">
               <label for="eventStartTime" class="form-label">Start Time <span class="text-danger">*</span></label>
-              <input type="time" class="form-control" id="eventStartTime" name="eventStartTime" [(ngModel)]="enteredEventStartTime" required="">
+              <input
+                type="text"
+                id="eventStartTime" 
+                name="eventStartTime"
+                class="form-control"
+                mwlFlatpickr
+                [(ngModel)]="enteredEventStartTime"
+                [enableTime]="true"
+                [noCalendar]="true"
+                [dateFormat]="'h:i K'"
+                [time24hr]="false"
+              />
               @if (eventStartTimeError) {
                 <span class="text-danger text-sm">{{ eventStartTimeError }}</span>
               }
@@ -41,7 +94,18 @@
           <div class="col-md-3">
             <div class="mb-3">
               <label for="eventEndTime" class="form-label">End Time <span class="text-danger">*</span></label>
-              <input type="time" class="form-control" id="eventEndTime" name="eventEndTime" [(ngModel)]="enteredEventEndTime" required="">
+              <input
+                type="text"
+                id="eventEndTime" 
+                name="eventEndTime"
+                class="form-control"
+                mwlFlatpickr
+                [(ngModel)]="enteredEventEndTime"
+                [enableTime]="true"
+                [noCalendar]="true"
+                [dateFormat]="'h:i K'"
+                [time24hr]="false"
+              />
               @if (eventEndTimeError) {
                 <span class="text-danger text-sm">{{ eventEndTimeError }}</span>
               }

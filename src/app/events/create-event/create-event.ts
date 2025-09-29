@@ -17,9 +17,20 @@ import { SidebarStateService } from '../../core/services/sidebar-state.service';
 import { TodayPageStateService } from '../../core/services/todaypage-state.service';
 import { RepeaterStateService } from '../../core/services/repeater-state.service';
 
+import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr';
+import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectConfig } from '@ng-select/ng-select';
+
+
 @Component({
   selector: 'app-create-event',
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    FlatpickrDirective,
+    NgSelectComponent,
+  ],
+  providers: [provideFlatpickrDefaults()],
+  standalone: true,
   templateUrl: './create-event.html',
   styleUrl: './create-event.css',
 })
@@ -508,4 +519,26 @@ export class CreateEvent implements OnInit, OnChanges {
       return 'FILE';
     }
   }
+
+
+
+
+  selectedCar?: number;
+
+  cars = [
+      { id: 1, name: 'Volvo' },
+      { id: 2, name: 'Saab' },
+      { id: 3, name: 'Opel' },
+      { id: 4, name: 'Audi' },
+  ];
+
+
+
+
+
+
+
+
+
+
 }
