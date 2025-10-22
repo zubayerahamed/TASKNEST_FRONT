@@ -18,7 +18,7 @@ import { TodayPageStateService } from '../../core/services/todaypage-state.servi
 import { RepeaterStateService } from '../../core/services/repeater-state.service';
 
 import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr';
-import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectConfig } from '@ng-select/ng-select';
+// import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectConfig } from '@ng-select/ng-select';
 
 
 @Component({
@@ -27,7 +27,7 @@ import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent,
     CommonModule, 
     FormsModule, 
     FlatpickrDirective,
-    NgSelectComponent,
+    // NgSelectComponent,
   ],
   providers: [provideFlatpickrDefaults()],
   standalone: true,
