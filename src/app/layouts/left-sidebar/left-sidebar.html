@@ -4,244 +4,241 @@
 <div class="sidebar-wrapper vh-100 d-flex flex-column" [class.sidebar-open]="isSidebarOpen">
   <div class="user-content d-flex justify-content-between align-items-center position-relative">
     <img
-         [src]="'/assets/images/dummy-user.png'"
-         class="rounded-circle user-content-user-image"
-         alt="Workspace Avatar" />
-    <h5 class="user-content-workspace-title text-truncate fw-bold">
-      {{ workspaceName }}
-    </h5>
-    <a href="#" class="page-link workspace-dropdown-link" (click)="toggleWorkspaceDropdown(); $event.preventDefault()">
-      <i class="ph ph-caret-down fs-4 fw-bold"></i>
-    </a>
+      [src]="'/assets/images/dummy-user.png'"
+      class="rounded-circle user-content-user-image"
+      alt="Workspace Avatar" />
+      <h5 class="user-content-workspace-title text-truncate fw-bold">
+        {{ workspaceName }}
+      </h5>
+      <a href="#" class="page-link workspace-dropdown-link" (click)="toggleWorkspaceDropdown(); $event.preventDefault()">
+        <i class="ph ph-caret-down fs-4 fw-bold"></i>
+      </a>
 
-    <!-- Workspace Dropdown -->
-    <div class="workspace-dropdown" *ngIf="isWorkspaceDropdownOpen" (click)="onWorkspaceDropdownBackdropClick($event)">
-      <div class="workspace-dropdown-content">
-        <!-- Current Workspace Header -->
-        <div class="workspace-dropdown-header">
-          <span class="workspace-name">{{ workspaceName }}</span>
-        </div>
-
-        <!-- Workspace Settings -->
-        <div class="workspace-dropdown-item d-flex align-items-center" (click)="closeWorkspaceDropdown()">
-          <i class="ph ph-gear fs-5 me-3"></i>
-          <a routerLink="/workspace-settings" class="page-link">Workspace settings</a>
-        </div>
-
-        <!-- Switch to Section -->
-        @if (availableWorkspaces.length > 0) {
-          <!-- Divider -->
-          <div class="workspace-dropdown-divider"></div>
-          <div class="workspace-dropdown-section-title">
-            <i class="ph ph-arrows-clockwise me-3"></i>
-            <span>Switch to</span>
+      <!-- Workspace Dropdown -->
+      @if (isWorkspaceDropdownOpen) {
+        <div class="workspace-dropdown" (click)="onWorkspaceDropdownBackdropClick($event)">
+          <div class="workspace-dropdown-content">
+            <!-- Current Workspace Header -->
+            <div class="workspace-dropdown-header">
+              <span class="workspace-name">{{ workspaceName }}</span>
+            </div>
+            <!-- Workspace Settings -->
+            <div class="workspace-dropdown-item d-flex align-items-center" (click)="closeWorkspaceDropdown()">
+              <i class="ph ph-gear fs-5 me-3"></i>
+              <a routerLink="/workspace-settings" class="page-link">Workspace settings</a>
+            </div>
+            <!-- Switch to Section -->
+            @if (availableWorkspaces.length > 0) {
+              <!-- Divider -->
+              <div class="workspace-dropdown-divider"></div>
+              <div class="workspace-dropdown-section-title">
+                <i class="ph ph-arrows-clockwise me-3"></i>
+                <span>Switch to</span>
+              </div>
+            }
+            <!-- Available Workspaces -->
+            @for(workspace of availableWorkspaces; track workspace.id) {
+              <div class="workspace-dropdown-item" (click)="switchWorkspace(workspace); $event.stopPropagation()">
+                <i class="ph ph-gps fs-5 me-3"></i>
+                <span>{{ workspace.name }}</span>
+              </div>
+            }
+            <!-- Divider -->
+            <div class="workspace-dropdown-divider"></div>
+            <!-- Create Workspace -->
+            <div class="workspace-dropdown-item" (click)="openCreateWorkspaceModal(); $event.stopPropagation()">
+              <i class="ph ph-plus fs-5 me-3"></i>
+              <span>Create Workspace</span>
+            </div>
           </div>
-        }
-
-        <!-- Available Workspaces -->
-        @for(workspace of availableWorkspaces; track workspace.id) {
-          <div class="workspace-dropdown-item" (click)="switchWorkspace(workspace); $event.stopPropagation()">
-            <i class="ph ph-gps fs-5 me-3"></i>
-            <span>{{ workspace.name }}</span>
-          </div>
-        }
-
-        <!-- Divider -->
-        <div class="workspace-dropdown-divider"></div>
-
-        <!-- Create Workspace -->
-        <div class="workspace-dropdown-item" (click)="openCreateWorkspaceModal(); $event.stopPropagation()">
-          <i class="ph ph-plus fs-5 me-3"></i>
-          <span>Create Workspace</span>
         </div>
-      </div>
+      }
     </div>
-  </div>
-  <div class="d-grid gap-2">
-    <button class="btn btn-warning d-flex align-items-center justify-content-center" type="button">
-      <i class="ph ph-user-sound fs-5 me-2"></i><span>Voice Command</span>
-    </button>
-    <button class="btn btn-dark d-flex align-items-center justify-content-center" type="button" (click)="openAddTaskModal()">
-      <i class="ph ph-plus-circle fs-5 me-2"></i><span>Add Task</span>
-    </button>
-    <button class="btn btn-primary d-flex align-items-center justify-content-center" type="button" (click)="openAddEventModal()">
-      <i class="ph ph-calendar-plus fs-5 me-2"></i><span>Add Event</span>
-    </button>
-  </div>
-  <div class="divider"></div>
-  
-  @for (project of projects; track project.id) {
-    @if (project.isSystemDefined) {
-      <div class="d-flex align-items-center">
-        <i class="ph ph-tray fs-4 me-2"></i>
-        <a [routerLink]="['/project', project.id]" 
-          [queryParams]="{ projectName: project.name }" 
-          routerLinkActive="page-active"
-          class="page-link flex-grow-1">{{ project.name }}</a>
-        <span class="ms-2 me-2">{{ project.totalActiveEvents + project.totalActiveTasks }}</span>
-      </div>
-    }
-  }
-  
+    <div class="d-grid gap-2">
+      <button class="btn btn-warning d-flex align-items-center justify-content-center" type="button">
+        <i class="ph ph-user-sound fs-5 me-2"></i><span>Voice Command</span>
+      </button>
+      <button class="btn btn-dark d-flex align-items-center justify-content-center" type="button" (click)="openAddTaskModal()">
+        <i class="ph ph-plus-circle fs-5 me-2"></i><span>Add Task</span>
+      </button>
+      <button class="btn btn-primary d-flex align-items-center justify-content-center" type="button" (click)="openAddEventModal()">
+        <i class="ph ph-calendar-plus fs-5 me-2"></i><span>Add Event</span>
+      </button>
+    </div>
+    <div class="divider"></div>
 
-  <div class="d-flex align-items-center">
-    <i class="ph ph-calendar-dot fs-4 me-2"></i>
-    <a routerLink="/today" 
-       routerLinkActive="page-active"
-       class="page-link flex-grow-1">Today</a>
-    <span class="ms-2 me-2">{{ todayPageCount }}</span>
-  </div>
-  <div class="d-flex align-items-center">
-    <i class="ph ph-calendar-dots fs-4 me-2"></i>
-    <a routerLink="/upcoming" 
-       routerLinkActive="page-active"
-       class="page-link flex-grow-1">Upcoming</a>
-    <span class="ms-2 me-2">{{ upcomingPageCount }}</span>
-  </div>
-  <div class="divider"></div>
-  <div class="d-flex align-items-center">
-    <i class="ph ph-check-circle fs-4 me-2"></i>
-    <a routerLink="/completed" 
-       routerLinkActive="page-active"
-       class="page-link flex-grow-1">Completed</a>
-    <span class="ms-2 me-2">{{ completedPageCount }}</span>
-  </div>
-  <div class="spacer"></div>
-  <div class="d-flex align-items-center section-favourites">
-    <i class="ph ph-heart fs-4 fw-bold me-2"></i>
-    <span class="page-link fw-bold flex-grow-1">Favourites</span>
-    <a href="#" (click)="toggleFavouritesDropdown(); $event.preventDefault()" class="page-link">
-      <i class="ph fs-5 fw-bold ms-2" 
-         [class.ph-caret-down]="isFavouritesExpanded" 
-         [class.ph-caret-right]="!isFavouritesExpanded"></i>
-    </a>
-  </div>
-  
-  @if (isFavouritesExpanded) {
     @for (project of projects; track project.id) {
-      @if(!project.isSystemDefined && project.isFavourite){
-        <div class="d-flex align-items-center text-muted project-item position-relative">
-          <i class="ph ph-hash fs-5 ms-3 me-2" [style.color]="project.color"></i>
-          <a [routerLink]="['/project', project.id]" 
-            [queryParams]="{ projectName: project.name }" 
+      @if (project.isSystemDefined) {
+        <div class="d-flex align-items-center">
+          <i class="ph ph-tray fs-4 me-2"></i>
+          <a [routerLink]="['/project', project.id]"
+            [queryParams]="{ projectName: project.name }"
             routerLinkActive="page-active"
-            class="page-link flex-grow-1">{{ project.name }}</a>
+          class="page-link flex-grow-1">{{ project.name }}</a>
           <span class="ms-2 me-2">{{ project.totalActiveEvents + project.totalActiveTasks }}</span>
-          <a href="#" 
-            (click)="toggleProjectContextMenu(project.id, 'favourites', $event)" 
-            class="page-link align-items-center btn-edit-project">
-            <i class="ph ph-dots-three-outline fs-5 ms-2"></i>
-          </a>
-          
-          <!-- Context Menu for Favourite Projects -->
-          @if (isContextMenuActive(project.id, 'favourites')) {
-            <div class="project-context-menu"
+        </div>
+      }
+    }
+
+
+    <div class="d-flex align-items-center">
+      <i class="ph ph-calendar-dot fs-4 me-2"></i>
+      <a routerLink="/today"
+        routerLinkActive="page-active"
+      class="page-link flex-grow-1">Today</a>
+      <span class="ms-2 me-2">{{ todayPageCount }}</span>
+    </div>
+    <div class="d-flex align-items-center">
+      <i class="ph ph-calendar-dots fs-4 me-2"></i>
+      <a routerLink="/upcoming"
+        routerLinkActive="page-active"
+      class="page-link flex-grow-1">Upcoming</a>
+      <span class="ms-2 me-2">{{ upcomingPageCount }}</span>
+    </div>
+    <div class="divider"></div>
+    <div class="d-flex align-items-center">
+      <i class="ph ph-check-circle fs-4 me-2"></i>
+      <a routerLink="/completed"
+        routerLinkActive="page-active"
+      class="page-link flex-grow-1">Completed</a>
+      <span class="ms-2 me-2">{{ completedPageCount }}</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="d-flex align-items-center section-favourites">
+      <i class="ph ph-heart fs-4 fw-bold me-2"></i>
+      <span class="page-link fw-bold flex-grow-1">Favourites</span>
+      <a href="#" (click)="toggleFavouritesDropdown(); $event.preventDefault()" class="page-link">
+        <i class="ph fs-5 fw-bold ms-2"
+          [class.ph-caret-down]="isFavouritesExpanded"
+        [class.ph-caret-right]="!isFavouritesExpanded"></i>
+      </a>
+    </div>
+
+    @if (isFavouritesExpanded) {
+      @for (project of projects; track project.id) {
+        @if(!project.isSystemDefined && project.isFavourite){
+          <div class="d-flex align-items-center text-muted project-item position-relative">
+            <i class="ph ph-hash fs-5 ms-3 me-2" [style.color]="project.color"></i>
+            <a [routerLink]="['/project', project.id]"
+              [queryParams]="{ projectName: project.name }"
+              routerLinkActive="page-active"
+            class="page-link flex-grow-1">{{ project.name }}</a>
+            <span class="ms-2 me-2">{{ project.totalActiveEvents + project.totalActiveTasks }}</span>
+            <a href="#"
+              (click)="toggleProjectContextMenu(project.id, 'favourites', $event)"
+              class="page-link align-items-center btn-edit-project">
+              <i class="ph ph-dots-three-outline fs-5 ms-2"></i>
+            </a>
+
+            <!-- Context Menu for Favourite Projects -->
+            @if (isContextMenuActive(project.id, 'favourites')) {
+              <div class="project-context-menu"
                 [class.project-context-menu-above]="contextMenuPosition.showAbove"
                 [class.project-context-menu-below]="!contextMenuPosition.showAbove">
-              @if (project.isFavourite) {
-                <div class="context-menu-item" (click)="removeFavourites(project, $event)">
-                  <i class="ph ph-heart-break fs-5 me-2"></i>
-                  <span>Remove from favourites</span>
-                </div>
-              }
-              <div class="context-menu-item" (click)="addToFavourites(project, $event)">
+                @if (project.isFavourite) {
+                  <div class="context-menu-item" (click)="removeFavourites(project, $event)">
+                    <i class="ph ph-heart-break fs-5 me-2"></i>
+                    <span>Remove from favourites</span>
+                  </div>
+                }
+                <div class="context-menu-item" (click)="addToFavourites(project, $event)">
                   <i class="ph ph-pencil-simple-line fs-5 me-2"></i>
                   <span>Edit</span>
                 </div>
-              <div class="context-menu-item" (click)="addToFavourites(project, $event)">
-                <i class="ph ph-user-plus fs-5 me-2"></i>
-                <span>Add members</span>
+                <div class="context-menu-item" (click)="addToFavourites(project, $event)">
+                  <i class="ph ph-user-plus fs-5 me-2"></i>
+                  <span>Add members</span>
+                </div>
+                <div class="context-menu-item" (click)="addToFavourites(project, $event)">
+                  <i class="ph ph-sign-out fs-5 me-2"></i>
+                  <span>Leave from project</span>
+                </div>
+                <div class="context-menu-divider"></div>
+                <div class="context-menu-item" (click)="addToFavourites(project, $event)">
+                  <i class="ph ph-gear fs-5 me-2"></i>
+                  <span>Project settings</span>
+                </div>
+                <div class="context-menu-divider"></div>
+                <div class="context-menu-item context-menu-item-danger" (click)="deleteProject(project, $event)">
+                  <i class="ph ph-trash fs-5 me-2"></i>
+                  <span>Delete project</span>
+                </div>
               </div>
-              <div class="context-menu-item" (click)="addToFavourites(project, $event)">
-                <i class="ph ph-sign-out fs-5 me-2"></i>
-                <span>Leave from project</span>
-              </div>
-              <div class="context-menu-divider"></div>
-              <div class="context-menu-item" (click)="addToFavourites(project, $event)">
-                <i class="ph ph-gear fs-5 me-2"></i>
-                <span>Project settings</span>
-              </div>
-              <div class="context-menu-divider"></div>
-              <div class="context-menu-item context-menu-item-danger" (click)="deleteProject(project, $event)">
-                <i class="ph ph-trash fs-5 me-2"></i>
-                <span>Delete project</span>
-              </div>
-            </div>
-          }
-        </div>
+            }
+          </div>
+        }
       }
     }
-  }
 
-  <div class="spacer"></div>
-  <div class="d-flex align-items-center section-my-projects">
-    <i class="ph ph-briefcase fs-4 fw-bold me-2"></i>
-    <span class="page-link fw-bold flex-grow-1">My Projects</span>
-    <a href="#" (click)="addProject(); $event.preventDefault()" class="page-link btn-add-project"><i class="ph ph-plus fs-5 fw-bold ms-2 me-2"></i></a>
-    <a href="#" (click)="toggleMyProjectsDropdown(); $event.preventDefault()" class="page-link">
-      <i class="ph fs-5 fw-bold ms-2" 
-         [class.ph-caret-down]="isMyProjectsExpanded" 
-         [class.ph-caret-right]="!isMyProjectsExpanded"></i>
-    </a>
-  </div>
-  @if (isMyProjectsExpanded) {
-    @for (project of projects; track project.id) {
-      @if(!project.isSystemDefined){
-        <div class="d-flex align-items-center text-muted project-item position-relative">
-          <i class="ph ph-hash fs-5 ms-3 me-2" [style.color]="project.color"></i>
-          <a [routerLink]="['/project', project.id]" 
-            [queryParams]="{ projectName: project.name }" 
-            routerLinkActive="page-active"
+    <div class="spacer"></div>
+    <div class="d-flex align-items-center section-my-projects">
+      <i class="ph ph-briefcase fs-4 fw-bold me-2"></i>
+      <span class="page-link fw-bold flex-grow-1">My Projects</span>
+      <a href="#" (click)="addProject(); $event.preventDefault()" class="page-link btn-add-project"><i class="ph ph-plus fs-5 fw-bold ms-2 me-2"></i></a>
+      <a href="#" (click)="toggleMyProjectsDropdown(); $event.preventDefault()" class="page-link">
+        <i class="ph fs-5 fw-bold ms-2"
+          [class.ph-caret-down]="isMyProjectsExpanded"
+        [class.ph-caret-right]="!isMyProjectsExpanded"></i>
+      </a>
+    </div>
+    @if (isMyProjectsExpanded) {
+      @for (project of projects; track project.id) {
+        @if(!project.isSystemDefined){
+          <div class="d-flex align-items-center text-muted project-item position-relative">
+            <i class="ph ph-hash fs-5 ms-3 me-2" [style.color]="project.color"></i>
+            <a [routerLink]="['/project', project.id]"
+              [queryParams]="{ projectName: project.name }"
+              routerLinkActive="page-active"
             class="page-link flex-grow-1">{{ project.name }}</a>
-          <span class="ms-2 me-2">{{ project.totalActiveEvents + project.totalActiveTasks }}</span>
-          <a href="#" 
-            (click)="toggleProjectContextMenu(project.id, 'projects', $event)" 
-            class="page-link align-items-center btn-edit-project">
-            <i class="ph ph-dots-three-outline fs-5 ms-2"></i>
-          </a>
-          
-          <!-- Context Menu for My Projects -->
-          @if (isContextMenuActive(project.id, 'projects')) {
-            <div class="project-context-menu"
+            <span class="ms-2 me-2">{{ project.totalActiveEvents + project.totalActiveTasks }}</span>
+            <a href="#"
+              (click)="toggleProjectContextMenu(project.id, 'projects', $event)"
+              class="page-link align-items-center btn-edit-project">
+              <i class="ph ph-dots-three-outline fs-5 ms-2"></i>
+            </a>
+
+            <!-- Context Menu for My Projects -->
+            @if (isContextMenuActive(project.id, 'projects')) {
+              <div class="project-context-menu"
                 [class.project-context-menu-above]="contextMenuPosition.showAbove"
                 [class.project-context-menu-below]="!contextMenuPosition.showAbove">
-              @if (project.isFavourite) {
-                <div class="context-menu-item" (click)="removeFavourites(project, $event)">
-                  <i class="ph ph-heart-break fs-5 me-2"></i>
-                  <span>Remove from favourites</span>
-                </div>
-              } @else {
+                @if (project.isFavourite) {
+                  <div class="context-menu-item" (click)="removeFavourites(project, $event)">
+                    <i class="ph ph-heart-break fs-5 me-2"></i>
+                    <span>Remove from favourites</span>
+                  </div>
+                } @else {
+                  <div class="context-menu-item" (click)="addToFavourites(project, $event)">
+                    <i class="ph ph-heart fs-5 me-2"></i>
+                    <span>Add to favourite</span>
+                  </div>
+                }
                 <div class="context-menu-item" (click)="addToFavourites(project, $event)">
-                  <i class="ph ph-heart fs-5 me-2"></i>
-                  <span>Add to favourite</span>
+                  <i class="ph ph-pencil-simple-line fs-5 me-2"></i>
+                  <span>Edit</span>
                 </div>
-              }
-              <div class="context-menu-item" (click)="addToFavourites(project, $event)">
-                <i class="ph ph-pencil-simple-line fs-5 me-2"></i>
-                <span>Edit</span>
+                <div class="context-menu-item" (click)="addToFavourites(project, $event)">
+                  <i class="ph ph-user-plus fs-5 me-2"></i>
+                  <span>Add members</span>
+                </div>
+                <div class="context-menu-item" (click)="addToFavourites(project, $event)">
+                  <i class="ph ph-sign-out fs-5 me-2"></i>
+                  <span>Leave from project</span>
+                </div>
+                <div class="context-menu-divider"></div>
+                <div class="context-menu-item">
+                  <i class="ph ph-gear fs-5 me-2"></i>
+                  <a class="page-link" [routerLink]="['/project-settings', project.id]">Project settings</a>
+                </div>
+                <div class="context-menu-divider"></div>
+                <div class="context-menu-item context-menu-item-danger" (click)="deleteProject(project, $event)">
+                  <i class="ph ph-trash fs-5 me-2"></i>
+                  <span>Delete project</span>
+                </div>
               </div>
-              <div class="context-menu-item" (click)="addToFavourites(project, $event)">
-                <i class="ph ph-user-plus fs-5 me-2"></i>
-                <span>Add members</span>
-              </div>
-              <div class="context-menu-item" (click)="addToFavourites(project, $event)">
-                <i class="ph ph-sign-out fs-5 me-2"></i>
-                <span>Leave from project</span>
-              </div>
-              <div class="context-menu-divider"></div>
-              <div class="context-menu-item">
-                <i class="ph ph-gear fs-5 me-2"></i>
-                <a class="page-link" [routerLink]="['/project-settings', project.id]">Project settings</a>
-              </div>
-              <div class="context-menu-divider"></div>
-              <div class="context-menu-item context-menu-item-danger" (click)="deleteProject(project, $event)">
-                <i class="ph ph-trash fs-5 me-2"></i>
-                <span>Delete project</span>
-              </div>
-            </div>
-          }
-        </div>
+            }
+          </div>
+        }
       }
     }
-  }
-</div>
+  </div>

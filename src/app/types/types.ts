@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import {
   Category,
@@ -11,7 +11,7 @@ import { AlertService } from '../core/services/alert.service';
 
 @Component({
   selector: 'app-types',
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './types.html',
   styleUrl: './types.css',
 })

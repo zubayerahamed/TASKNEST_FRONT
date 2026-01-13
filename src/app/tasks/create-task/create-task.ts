@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Participant } from '../../core/models/participant.model';
@@ -7,7 +7,7 @@ import { AttachedFile } from '../../core/models/attached-file.model';
 
 @Component({
   selector: 'app-create-task',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './create-task.html',
   styleUrl: './create-task.css',
 })

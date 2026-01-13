@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { Category } from '../../core/models/category.model';
 import { ChecklistItem } from '../../core/models/checklist-item.model';
@@ -19,7 +19,7 @@ import { TodayPageStateService } from '../../core/services/todaypage-state.servi
 
 @Component({
   selector: 'app-edit-event',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './edit-event.html',
   styleUrl: './edit-event.css'
 })

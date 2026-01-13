@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TagService } from '../core/services/tag.service';
@@ -7,7 +7,7 @@ import { AlertService } from '../core/services/alert.service';
 
 @Component({
   selector: 'app-tags',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './tags.html',
   styleUrl: './tags.css'
 })

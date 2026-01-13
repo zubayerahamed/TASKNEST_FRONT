@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProjectService } from '../../core/services/project.service';
@@ -7,7 +7,7 @@ import { AddProject } from '../../core/models/project.model';
 
 @Component({
   selector: 'app-create-project',
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './create-project.html',
   styleUrls: ['./create-project.css'],
 })

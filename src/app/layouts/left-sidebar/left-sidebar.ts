@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   DestroyRef,
@@ -28,7 +28,7 @@ import { PageService } from '../../core/services/page.service';
 @Component({
   selector: 'app-left-sidebar',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, RouterLinkActive],
+  imports: [FormsModule, RouterLink, RouterLinkActive],
   templateUrl: './left-sidebar.html',
   styleUrl: './left-sidebar.css',
 })

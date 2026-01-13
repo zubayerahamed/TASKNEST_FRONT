@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AttachedFile, Document } from '../../core/models/attached-file.model';
@@ -24,11 +24,9 @@ import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr
 @Component({
   selector: 'app-create-event',
   imports: [
-    CommonModule, 
-    FormsModule, 
-    FlatpickrDirective,
-    // NgSelectComponent,
-  ],
+    FormsModule,
+    FlatpickrDirective
+],
   providers: [provideFlatpickrDefaults()],
   standalone: true,
   templateUrl: './create-event.html',

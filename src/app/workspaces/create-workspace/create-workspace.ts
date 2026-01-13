@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AddWorkspace, Workspace } from '../../core/models/workspace.model';
@@ -8,7 +8,7 @@ import { WorkspaceService } from '../../core/services/workspace.service';
 @Component({
   selector: 'app-create-workspace',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [FormsModule],
   templateUrl: './create-workspace.html',
   styleUrl: './create-workspace.css',
 })

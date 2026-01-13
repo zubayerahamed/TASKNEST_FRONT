@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthHelper } from '../../core/helpers/auth.helper';
@@ -6,7 +6,7 @@ import { PushNotificationService } from '../../core/services/push-notification.s
 
 @Component({
   selector: 'app-header',
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })

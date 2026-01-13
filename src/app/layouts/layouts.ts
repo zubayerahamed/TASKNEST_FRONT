@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import {
   Component,
   DestroyRef,
@@ -36,7 +36,6 @@ import { RepeaterStateService } from '../core/services/repeater-state.service';
   styleUrls: ['./layouts.css'],
   imports: [
     RouterOutlet,
-    CommonModule,
     FormsModule,
     LeftSidebar,
     Header,

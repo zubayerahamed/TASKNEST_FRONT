@@ -1,50 +1,56 @@
-<div class="modal-backdrop" *ngIf="isAddProjectModalOpen" (click)="onBackdropClick($event)">
-  <div class="modal-container project-modal d-flex flex-column" style="max-width: 500px;">
-    <div class="modal-header d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center">
-        <h4 class="modal-title m-0 p-0">Add Project</h4>
+@if (isAddProjectModalOpen) {
+  <div class="modal-backdrop" (click)="onBackdropClick($event)">
+    <div class="modal-container project-modal d-flex flex-column" style="max-width: 500px;">
+      <div class="modal-header d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <h4 class="modal-title m-0 p-0">Add Project</h4>
+        </div>
+        <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="onCloseAddProjectModal(); $event.preventDefault()">
+          <i class="ph ph-x fs-4"></i>
+        </button>
       </div>
-      <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="onCloseAddProjectModal(); $event.preventDefault()">
-        <i class="ph ph-x fs-4"></i>
-      </button>
-    </div>
-    <div class="modal-body">
-      <form>
-        <div class="mb-3">
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
             <input type="text" class="form-control" placeholder="Project name" name="name" [(ngModel)]="enteredName"/>
-            <div class="text-danger text-sm" *ngIf="enteredNameError">{{ enteredNameError }}</div>
-        </div>
-        <div class="mb-3 color-picker-container">
-          <label for="colorInput" class="form-label">Color</label>
-          <div class="d-flex align-items-center">
-            <input type="color" id="colorInput" name="color" [(ngModel)]="enteredColor" class="form-control form-control-color" />
-            <input type="text" class="form-control ms-2 color-hex-input" [value]="enteredColor" readonly />
+            @if (enteredNameError) {
+              <div class="text-danger text-sm">{{ enteredNameError }}</div>
+            }
           </div>
-        </div>
-        <div class="mb-3 layout-button-group">
-          <label class="form-label">Layout</label>
-          <div class="btn-group gap-2" role="group" aria-label="Layout selection">
-            <button type="button" class="btn" [class.active]="enteredLayoutType === 'LIST'" (click)="enteredLayoutType = 'LIST'">
-              <i class="ph ph-list"></i><br/><span>List</span>
-            </button>
-            <button type="button" class="btn" [class.active]="enteredLayoutType === 'BOARD'" (click)="enteredLayoutType = 'BOARD'">
-              <i class="ph ph-columns"></i><br/><span>Board</span>
-            </button>
-            <button type="button" class="btn" [class.active]="enteredLayoutType === 'CALENDAR'" (click)="enteredLayoutType = 'CALENDAR'">
-              <i class="ph ph-calendar"></i><br/><span>Calendar</span>
-            </button>
+          <div class="mb-3 color-picker-container">
+            <label for="colorInput" class="form-label">Color</label>
+            <div class="d-flex align-items-center">
+              <input type="color" id="colorInput" name="color" [(ngModel)]="enteredColor" class="form-control form-control-color" />
+              <input type="text" class="form-control ms-2 color-hex-input" [value]="enteredColor" readonly />
+            </div>
           </div>
-          <div class="text-danger text-sm" *ngIf="enteredLayoutTypeError">{{ enteredLayoutTypeError }}</div>
-        </div>
-        <div class="mb-3 form-check form-switch">
-          <input type="checkbox" class="form-check-input" id="isFavourite" name="isFavourite" [(ngModel)]="enteredIsFavourite"/>
-          <label class="form-check-label" for="isFavourite">Add to favourite</label>
-        </div>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary" (click)="onCloseAddProjectModal()">Cancel</button>
-      <button type="submit" class="btn btn-primary" (click)="addProject()">Add</button>
+          <div class="mb-3 layout-button-group">
+            <label class="form-label">Layout</label>
+            <div class="btn-group gap-2" role="group" aria-label="Layout selection">
+              <button type="button" class="btn" [class.active]="enteredLayoutType === 'LIST'" (click)="enteredLayoutType = 'LIST'">
+                <i class="ph ph-list"></i><br/><span>List</span>
+              </button>
+              <button type="button" class="btn" [class.active]="enteredLayoutType === 'BOARD'" (click)="enteredLayoutType = 'BOARD'">
+                <i class="ph ph-columns"></i><br/><span>Board</span>
+              </button>
+              <button type="button" class="btn" [class.active]="enteredLayoutType === 'CALENDAR'" (click)="enteredLayoutType = 'CALENDAR'">
+                <i class="ph ph-calendar"></i><br/><span>Calendar</span>
+              </button>
+            </div>
+            @if (enteredLayoutTypeError) {
+              <div class="text-danger text-sm">{{ enteredLayoutTypeError }}</div>
+            }
+          </div>
+          <div class="mb-3 form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="isFavourite" name="isFavourite" [(ngModel)]="enteredIsFavourite"/>
+            <label class="form-check-label" for="isFavourite">Add to favourite</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="onCloseAddProjectModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" (click)="addProject()">Add</button>
+      </div>
     </div>
   </div>
-</div>
+}
