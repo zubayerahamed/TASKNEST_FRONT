@@ -1,4 +1,3 @@
-
 import {
   Component,
   DestroyRef,
@@ -26,7 +25,7 @@ import { AuthHelper } from '../core/helpers/auth.helper';
 import { CreateProject } from '../project/create-project/create-project';
 import { WorkspaceService } from '../core/services/workspace.service';
 import { JwtPayload } from 'jwt-decode';
-import { CreateEventRepeater } from "../events/create-event-repeater/create-event-repeater";
+import { CreateEventRepeater } from '../events/create-event-repeater/create-event-repeater';
 import { RepeaterStateService } from '../core/services/repeater-state.service';
 
 @Component({
@@ -43,8 +42,8 @@ import { RepeaterStateService } from '../core/services/repeater-state.service';
     CreateTask,
     CreateWorkspace,
     CreateProject,
-    CreateEventRepeater
-],
+    CreateEventRepeater,
+  ],
 })
 export class Layouts implements OnInit {
   appTitle: string = 'TASKNEST';
@@ -65,9 +64,9 @@ export class Layouts implements OnInit {
     // Initialize Route
     this.initializeRoute();
 
-    // Repeater 
-    this.repeaterStateService.isModalOpen$.subscribe(data => {
-      if(data === 'OPEN'){
+    // Repeater
+    this.repeaterStateService.isModalOpen$.subscribe((data) => {
+      if (data === 'OPEN') {
         this.openRepeaterModal();
       } else {
         this.closeRepeaterModal();
@@ -81,24 +80,27 @@ export class Layouts implements OnInit {
 
   // Repeater modal
   public isRepeaterModalOpen = false;
-  openRepeaterModal(){
+  openRepeaterModal() {
     this.isRepeaterModalOpen = true;
   }
-  closeRepeaterModal(){
+  closeRepeaterModal() {
     this.isRepeaterModalOpen = false;
   }
 
   // choose default route at the very beginning
-  initializeDefaultRoute(){
-    console.log("%cInitialized Default Route", "color: green");
+  initializeDefaultRoute() {
+    console.log('%cInitialized Default Route', 'color: green');
     if (this.router.url == '/') {
       this.router.navigate(['/today']);
     }
   }
 
   // Initialize Route
-  initializeRoute(){
-    console.log("%cRest sidebar state when navigating to a new route", "color: green");
+  initializeRoute() {
+    console.log(
+      '%cRest sidebar state when navigating to a new route',
+      'color: green'
+    );
     const routerSubs = this.router.events.subscribe({
       next: (event) => {
         if (event instanceof NavigationStart) {
@@ -116,7 +118,6 @@ export class Layouts implements OnInit {
     });
   }
 
-
   /**
    * ===== Workspace =====
    */
@@ -128,31 +129,31 @@ export class Layouts implements OnInit {
   currentWorkspace!: Workspace;
 
   // Load Current Workspace
-  loadCurrentWorkspace(){
-    console.log("%cLoading current workspaces", "color: green");
-    const workspaceId =  AuthHelper.getJwtPayloads()?.workspaceId;
-    if(workspaceId == null) return;
+  loadCurrentWorkspace() {
+    console.log('%cLoading current workspaces', 'color: green');
+    const workspaceId = AuthHelper.getJwtPayloads()?.workspaceId;
+    if (workspaceId == null) return;
 
     this.workspaceService.findWorkspace(workspaceId).subscribe({
       next: (resData) => {
         this.currentWorkspace = resData.data;
-      }, 
+      },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
   // Load available other workspaces here
-  loadAvailableWorkspaces(){
-    console.log("%cLoading all available other workspaces", "color: green");
+  loadAvailableWorkspaces() {
+    console.log('%cLoading all available other workspaces', 'color: green');
     this.workspaceService.getAllOtherWorkspaces().subscribe({
       next: (resData) => {
         this.availableWorkspaces = resData.data;
-      }, 
+      },
       error: (error) => {
         console.log(error);
-      }
+      },
     });
   }
 
@@ -162,12 +163,10 @@ export class Layouts implements OnInit {
     this.newWorkspaceName = '';
   }
 
-  closeCreateWorkspaceModal(){
+  closeCreateWorkspaceModal() {
     this.isCreateWorkspaceModalOpen = false;
     this.newWorkspaceName = '';
   }
-
-  
 
   // User profile dropdown properties
   isUserProfileDropdownOpen = false;
@@ -176,7 +175,6 @@ export class Layouts implements OnInit {
     email: 'zubayer@example.com',
     avatar: '/assets/images/zubayer.jpg',
   };
-
 
   // Dummy participants data
   allParticipants: Participant[] = [
@@ -373,8 +371,6 @@ export class Layouts implements OnInit {
       },
     });
   }
-
-  
 
   // Left sidebar event handlers
   onSidebarToggle() {
