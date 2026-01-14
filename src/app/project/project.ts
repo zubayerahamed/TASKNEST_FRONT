@@ -1,9 +1,9 @@
 import { Component, DestroyRef, inject, Input, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { EventPreview } from "../core/components/shared/event-preview/event-preview";
 import { EventDto } from '../core/models/event.model';
 import { EventService } from '../core/services/event.service';
 import { ProjectPageStateService } from '../core/services/porjectpage-state.service';
+import { EventPreview } from '../shared/components/event-preview/event-preview';
 
 @Component({
   selector: 'app-project',

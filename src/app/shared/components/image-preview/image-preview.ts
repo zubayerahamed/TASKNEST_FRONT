@@ -1,5 +1,5 @@
 import { Component, inject, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { DocumentService } from '../../../services/document.service';
+import { DocumentService } from '../../../core/services/document.service';
 
 @Component({
   selector: 'app-image-preview',

@@ -1,7 +1,8 @@
 import { KeyValuePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { EventDto } from '../../../models/event.model';
+import { EventDto } from '../../../core/models/event.model';
 import { EventPreview } from '../event-preview/event-preview';
+
 
 @Component({
   selector: 'app-page-detail',

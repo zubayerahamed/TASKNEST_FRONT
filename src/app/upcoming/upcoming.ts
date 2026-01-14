@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject } from '@angular/core';
-import { PageDetail } from '../core/components/shared/page-detail/page-detail';
+import { PageDetail } from '../shared/components/page-detail/page-detail';
 import { EventDto } from '../core/models/event.model';
 import { PageService } from '../core/services/page.service';
 import { TodayPageStateService } from '../core/services/todaypage-state.service';

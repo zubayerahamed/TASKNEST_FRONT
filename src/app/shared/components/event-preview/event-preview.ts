@@ -1,12 +1,12 @@
 import { Component, inject, Input } from '@angular/core';
-import { EditEvent } from "../../../../events/edit-event/edit-event";
-import { Document } from '../../../models/attached-file.model';
-import { EventChecklist, EventDto } from '../../../models/event.model';
-import { AlertService } from '../../../services/alert.service';
-import { DocumentService } from '../../../services/document.service';
-import { EventService } from '../../../services/event.service';
-import { SidebarStateService } from '../../../services/sidebar-state.service';
+import { EditEvent } from '../../../events/edit-event/edit-event';
 import { ImagePreview } from "../image-preview/image-preview";
+import { EventChecklist, EventDto } from '../../../core/models/event.model';
+import { EventService } from '../../../core/services/event.service';
+import { AlertService } from '../../../core/services/alert.service';
+import { SidebarStateService } from '../../../core/services/sidebar-state.service';
+import { DocumentService } from '../../../core/services/document.service';
+import { Document } from '../../../core/models/attached-file.model';
 
 @Component({
   selector: 'app-event-preview',
