@@ -1,17 +1,17 @@
 // src/app/app.routes.ts
 import { Routes } from '@angular/router';
-import { Login } from './Authentication/login/login';
+import { Login } from './pages/Authentication/login/login';
 import { Layouts } from './layouts/layouts';
-import { Today } from './today/today';
-import { Register } from './Authentication/register/register';
-import { ForgotPassword } from './Authentication/forgot-password/forgot-password';
-import { ResetPassword } from './Authentication/reset-password/reset-password';
+import { Today } from './pages/today/today';
+import { Register } from './pages/Authentication/register/register';
+import { ForgotPassword } from './pages/Authentication/forgot-password/forgot-password';
+import { ResetPassword } from './pages/Authentication/reset-password/reset-password';
 import { AuthGuard } from './core/guards/auth.guard';
-import { Project } from './project/project';
-import { Upcoming } from './upcoming/upcoming';
-import { Completed } from './completed/completed';
-import { WorkspaceSettings } from './workspaces/workspace-settings/workspace-settings';
-import { ProjectSettings } from './project/project-settings/project-settings';
+import { Project } from './pages/project/project';
+import { Upcoming } from './pages/upcoming/upcoming';
+import { Completed } from './pages/completed/completed';
+import { WorkspaceSettings } from './pages/workspaces/workspace-settings/workspace-settings';
+import { ProjectSettings } from './pages/project/project-settings/project-settings';
 
 
 export const routes: Routes = [

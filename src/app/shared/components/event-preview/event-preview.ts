@@ -1,5 +1,4 @@
 import { Component, inject, Input } from '@angular/core';
-import { EditEvent } from '../../../events/edit-event/edit-event';
 import { ImagePreview } from "../image-preview/image-preview";
 import { EventChecklist, EventDto } from '../../../core/models/event.model';
 import { EventService } from '../../../core/services/event.service';
@@ -7,6 +6,7 @@ import { AlertService } from '../../../core/services/alert.service';
 import { SidebarStateService } from '../../../core/services/sidebar-state.service';
 import { DocumentService } from '../../../core/services/document.service';
 import { Document } from '../../../core/models/attached-file.model';
+import { EditEvent } from '../../../pages/events/edit-event/edit-event';
 
 @Component({
   selector: 'app-event-preview',

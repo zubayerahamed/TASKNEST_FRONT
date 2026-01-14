@@ -14,19 +14,19 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { Header } from './header/header';
-import { CreateEvent } from '../events/create-event/create-event';
-import { CreateTask } from '../tasks/create-task/create-task';
-import { CreateWorkspace } from '../workspaces/create-workspace/create-workspace';
 import { AuthService } from '../core/services/auth.service';
 import { Workspace } from '../core/models/workspace.model';
 import { Participant } from '../core/models/participant.model';
 import { Tag } from '../core/models/tag.model';
 import { AuthHelper } from '../core/helpers/auth.helper';
-import { CreateProject } from '../project/create-project/create-project';
 import { WorkspaceService } from '../core/services/workspace.service';
 import { JwtPayload } from 'jwt-decode';
-import { CreateEventRepeater } from '../events/create-event-repeater/create-event-repeater';
 import { RepeaterStateService } from '../core/services/repeater-state.service';
+import { CreateTask } from '../pages/tasks/create-task/create-task';
+import { CreateEvent } from '../pages/events/create-event/create-event';
+import { CreateEventRepeater } from '../pages/events/create-event-repeater/create-event-repeater';
+import { CreateWorkspace } from '../pages/workspaces/create-workspace/create-workspace';
+import { CreateProject } from '../pages/project/create-project/create-project';
 
 @Component({
   selector: 'app-layouts',
