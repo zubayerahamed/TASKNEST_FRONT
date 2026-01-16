@@ -252,15 +252,6 @@ export class Layouts implements OnInit {
     this.isSidebarOpen = false;
   }
 
-  // Event Modal Methods
-  isAddEventModalOpen = false;
-  openAddEventModal() {
-    this.isAddEventModalOpen = true;
-  }
-  onCloseAddEventModal() {
-    this.isAddEventModalOpen = false;
-  }
-
   // Task Modal Methods
   isAddTaskModalOpen = false;
   openAddTaskModal() {

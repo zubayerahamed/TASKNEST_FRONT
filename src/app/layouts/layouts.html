@@ -14,7 +14,6 @@
       (workspaceCreate)="onWorkspaceCreate($event)"
       (workspaceNameChange)="onWorkspaceNameChange($event)"
       (addTaskModalOpen)="openAddTaskModal()"
-      (addEventModalOpen)="openAddEventModal()"
       (addProjectModalOpen)="openAddProjectModal()"
       (loadAvailableWorkspacesAgain)="loadAvailableWorkspaces()"
     />
@@ -39,10 +38,7 @@
     </div>
   
     <!-- Add Event Modal -->
-    <app-create-event
-      [isAddEventModalOpen]="isAddEventModalOpen"
-      (isAddEventModalClose)="onCloseAddEventModal()"
-    />
+    <app-create-event/>
   
     <app-create-event-repeater
       [isRepeaterModalOpen]="isRepeaterModalOpen"

@@ -24,6 +24,7 @@ import { ProjectService } from '../../core/services/project.service';
 import { WorkspaceStateService } from '../../core/services/workspace-state.service';
 import { SidebarStateService } from '../../core/services/sidebar-state.service';
 import { PageService } from '../../core/services/page.service';
+import { EventModalStateService } from '../../core/services/event-modal-state.service';
 
 @Component({
   selector: 'app-left-sidebar',
@@ -49,7 +50,6 @@ export class LeftSidebar implements OnInit, OnChanges, OnDestroy {
   @Output() workspaceCreate = new EventEmitter<string>();
   @Output() workspaceNameChange = new EventEmitter<string>();
   @Output() addTaskModalOpen = new EventEmitter<void>();
-  @Output() addEventModalOpen = new EventEmitter<void>();
   @Output() addProjectModalOpen = new EventEmitter<void>();
   @Output() loadAvailableWorkspacesAgain = new EventEmitter<void>();
   
@@ -63,6 +63,7 @@ export class LeftSidebar implements OnInit, OnChanges, OnDestroy {
   private sidebarStateService = inject(SidebarStateService);
   private alertService = inject(AlertService);
   private pageService = inject(PageService);
+  private eventModalStateService = inject(EventModalStateService);
   private workspaceNameSubscription?: Subscription;
 
   public workspace!: Workspace;
@@ -293,8 +294,8 @@ export class LeftSidebar implements OnInit, OnChanges, OnDestroy {
     this.addTaskModalOpen.emit();
   }
 
-  openAddEventModal() {
-    this.addEventModalOpen.emit();
+  openCreateEventModal() {
+    this.eventModalStateService.openModal();
   }
 
   @HostListener('document:click', ['$event'])

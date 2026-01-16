@@ -1,8 +1,20 @@
-
-import { Component, EventEmitter, inject, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { FlatpickrDirective, provideFlatpickrDefaults } from 'angularx-flatpickr';
+import {
+  FlatpickrDirective,
+  provideFlatpickrDefaults,
+} from 'angularx-flatpickr';
 import { AlertService } from '../../../core/services/alert.service';
 import { ProjectService } from '../../../core/services/project.service';
 import { CategoryService } from '../../../core/services/category.service';
@@ -17,25 +29,26 @@ import { Category } from '../../../core/models/category.model';
 import { ChecklistItem } from '../../../core/models/checklist-item.model';
 import { AddEvent, EventDto } from '../../../core/models/event.model';
 import { Participant } from '../../../core/models/participant.model';
-import { AttachedFile, Document } from '../../../core/models/attached-file.model';
+import {
+  AttachedFile,
+  Document,
+} from '../../../core/models/attached-file.model';
+import { EventModalStateService } from '../../../core/services/event-modal-state.service';
+import { AsyncPipe } from '@angular/common';
+import { Subject } from 'rxjs';
 // import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectConfig } from '@ng-select/ng-select';
-
 
 @Component({
   selector: 'app-create-event',
-  imports: [
-    FormsModule,
-    FlatpickrDirective
-],
+  imports: [FormsModule, FlatpickrDirective, AsyncPipe],
   providers: [provideFlatpickrDefaults()],
   standalone: true,
   templateUrl: './create-event.html',
   styleUrl: './create-event.css',
 })
 export class CreateEvent implements OnInit, OnChanges {
-  @Input({required : true}) isAddEventModalOpen!: boolean;
-  @Output() isAddEventModalClose = new EventEmitter<void>();
 
+  private destroyRef = inject(DestroyRef);
   private alertService = inject(AlertService);
   private projectService = inject(ProjectService);
   private categoryService = inject(CategoryService);
@@ -45,7 +58,12 @@ export class CreateEvent implements OnInit, OnChanges {
   private todayPageStageService = inject(TodayPageStateService);
   private documentService = inject(DocumentService);
   private repeaterStateService = inject(RepeaterStateService);
+  private eventModalStateService = inject(EventModalStateService);
 
+  // State observables
+  isOpenModal$ = this.eventModalStateService.isModalOpen$;
+
+  // Data properties
   public projects: Project[] = [];
   public categories: Category[] = [];
   public checklistItems: ChecklistItem[] = [];
@@ -70,22 +88,27 @@ export class CreateEvent implements OnInit, OnChanges {
   eventProjectError: string = '';
 
   ngOnInit() {
-    this.initializeDateTime();
-    this.loadProjects();
+    const eventModalSubs = this.eventModalStateService.isModalOpen$.subscribe({
+      next: (data) => {
+        this.initializeDateTime();
+        this.loadProjects();
+      },
+    });
+
+    this.destroyRef.onDestroy(() => {
+      eventModalSubs.unsubscribe();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['isAddEventModalOpen'] && this.isAddEventModalOpen) {
-      this.initializeDateTime();
-      this.loadProjects();
-    }
+    
   }
 
-  onOpenRepeater(){
+  onOpenRepeater() {
     this.repeaterStateService.updateModalStatus('OPEN');
   }
 
-  initializeDateTime(){
+  initializeDateTime() {
     const now = new Date();
 
     this.enteredEventDate = now.toISOString().split('T')[0];
@@ -103,35 +126,45 @@ export class CreateEvent implements OnInit, OnChanges {
     this.enteredEventEndTime = `${endHours}:${endMinutes}`;
   }
 
-  loadProjects(){
+  loadProjects() {
     console.log('Loading projects...');
     // Fetch projects from the service
-    this.projectService.getAllProjects().subscribe({
+    const projectSubscription = this.projectService.getAllProjects().subscribe({
       next: (resData) => {
         this.projects = resData.data || [];
-      }, 
+      },
       error: (error) => {
         console.error('Error fetching projects:', error);
-      }
+      },
+    });
+
+    this.destroyRef.onDestroy(() => {
+      projectSubscription.unsubscribe();
     });
   }
 
   onProjectChange(event: EventDto) {
-    if(this.selectedProjectId == null) return;
+    if (this.selectedProjectId == null) return;
 
-    // Fetch the categories for the selected project. 
-    this.categoryService.getAllProjectCategories(this.selectedProjectId).subscribe({
-      next: (resData) => {
-        this.categories = resData.data || [];
-        this.categories = this.categories.filter(cat => cat.isForEvent);
-      }, 
-      error: (error) => {
-        console.error('Error fetching categories:', error);
-      }
+    // Fetch the categories for the selected project.
+     const categorySubscription = this.categoryService
+      .getAllProjectCategories(this.selectedProjectId)
+      .subscribe({
+        next: (resData) => {
+          this.categories = resData.data || [];
+          this.categories = this.categories.filter((cat) => cat.isForEvent);
+        },
+        error: (error) => {
+          console.error('Error fetching categories:', error);
+        },
+      });
+
+    this.destroyRef.onDestroy(() => {
+      categorySubscription.unsubscribe();
     });
   }
 
-  resetForm(){
+  resetForm() {
     this.enteredEventDate = new Date().toISOString().split('T')[0];
     this.enteredEventStartTime = '';
     this.enteredEventEndTime = '';
@@ -148,7 +181,7 @@ export class CreateEvent implements OnInit, OnChanges {
     this.resetErrorMessages();
   }
 
-  resetErrorMessages(){
+  resetErrorMessages() {
     this.eventDateError = '';
     this.eventStartTimeError = '';
     this.eventEndTimeError = '';
@@ -157,56 +190,54 @@ export class CreateEvent implements OnInit, OnChanges {
   }
 
   validateForm(): boolean {
-
     // Reset errors
     this.resetErrorMessages();
     let isValid = true;
-  
-    if(this.enteredEventTitle.trim().length === 0){
+
+    if (this.enteredEventTitle.trim().length === 0) {
       this.eventTitleError = 'Event title is required.';
       isValid = false;
     }
 
-    if(this.enteredEventDate.trim().length === 0){
+    if (this.enteredEventDate.trim().length === 0) {
       this.eventDateError = 'Event date is required.';
       isValid = false;
     } else {
       const entered = new Date(this.enteredEventDate);
       const today = new Date();
-    
+
       // reset time part for accurate comparison
       entered.setHours(0, 0, 0, 0);
       today.setHours(0, 0, 0, 0);
-    
+
       if (entered < today) {
         this.eventDateError = 'Event date cannot be before today.';
         isValid = false;
       }
     }
-  
-  
-    if(this.enteredEventStartTime.trim().length === 0){
+
+    if (this.enteredEventStartTime.trim().length === 0) {
       this.eventStartTimeError = 'Event start time is required.';
       isValid = false;
     }
 
-    if(this.enteredEventEndTime.trim().length === 0){
+    if (this.enteredEventEndTime.trim().length === 0) {
       this.eventEndTimeError = 'Event end time is required.';
       isValid = false;
     }
 
     // check if end time is after start time
-    if(this.enteredEventStartTime && this.enteredEventEndTime){
+    if (this.enteredEventStartTime && this.enteredEventEndTime) {
       const start = this.enteredEventStartTime;
       const end = this.enteredEventEndTime;
 
-      if(start >= end){
+      if (start >= end) {
         this.eventEndTimeError = 'End time must be after start time.';
         isValid = false;
       }
     }
 
-    if(this.selectedProjectId == null){
+    if (this.selectedProjectId == null) {
       this.eventProjectError = 'Please select a project.';
       isValid = false;
     }
@@ -214,14 +245,14 @@ export class CreateEvent implements OnInit, OnChanges {
     return isValid;
   }
 
-  onCreateEvent(){
-    if(!this.validateForm()) return;
+  onCreateEvent() {
+    if (!this.validateForm()) return;
 
     // Prepare event data
     let eventDate = new Date(this.enteredEventDate);
     let formattedDate = eventDate.toISOString().split('T')[0];
 
-    const eventData : AddEvent = { 
+    const eventData: AddEvent = {
       title: this.enteredEventTitle,
       description: this.enteredEventDescription,
       projectId: this.selectedProjectId!,
@@ -233,12 +264,17 @@ export class CreateEvent implements OnInit, OnChanges {
       isReminderEnabled: this.selectedReminder != null,
       reminderBefore: this.selectedReminder || 0,
       perticipants: [],
-      documents: this.attachedFiles.map(file => file.id),
-      checklists: this.checklistItems? this.checklistItems.map(item => ({ description: item.text, isCompleted: item.completed })) : [],
-      eventLink: this.enteredEventLink
+      documents: this.attachedFiles.map((file) => file.id),
+      checklists: this.checklistItems
+        ? this.checklistItems.map((item) => ({
+            description: item.text,
+            isCompleted: item.completed,
+          }))
+        : [],
+      eventLink: this.enteredEventLink,
     };
 
-    this.eventService.createEvent(eventData).subscribe({
+    const createEventSubscription = this.eventService.createEvent(eventData).subscribe({
       next: (resData) => {
         this.alertService.success('Success!', 'Event created successfully!');
 
@@ -251,14 +287,17 @@ export class CreateEvent implements OnInit, OnChanges {
       },
       error: (error) => {
         console.error('Error creating event:', error);
-        this.alertService.error('Error!', 'Failed to create event. Please try again.');
-      }
+        this.alertService.error(
+          'Error!',
+          'Failed to create event. Please try again.'
+        );
+      },
     });
 
+    this.destroyRef.onDestroy(() => {
+      createEventSubscription.unsubscribe();
+    });
   }
-
-
-
 
   allParticipants: Participant[] = [
     {
@@ -333,10 +372,10 @@ export class CreateEvent implements OnInit, OnChanges {
 
   closeAddEventModal() {
     this.resetForm();
-    this.isAddEventModalOpen = false;
     this.isParticipantSearchOpen = false;
     this.participantSearchQuery = '';
-    this.isAddEventModalClose.emit();
+    //this.isAddEventModalClose.emit();
+    this.eventModalStateService.closeModal();
   }
 
   onEventModalBackdropClick(event: Event) {
@@ -450,7 +489,7 @@ export class CreateEvent implements OnInit, OnChanges {
       error: (err) => {
         console.log(err);
         this.alertService.error('Error!', 'Cant remove the document');
-      }
+      },
     });
   }
 
@@ -464,11 +503,11 @@ export class CreateEvent implements OnInit, OnChanges {
 
         // Submit file on server
         const formData = new FormData();
-        formData.append("file", selectedFile);
-        formData.append("title", selectedFile.name);
-        formData.append("description", "");
+        formData.append('file', selectedFile);
+        formData.append('title', selectedFile.name);
+        formData.append('description', '');
 
-        this.documentService.uploadDocument(formData).subscribe({
+        const uploadDocumentSubscription = this.documentService.uploadDocument(formData).subscribe({
           next: (resData) => {
             const document: Document = resData.data;
 
@@ -481,13 +520,16 @@ export class CreateEvent implements OnInit, OnChanges {
             };
 
             this.attachedFiles.push(attachedFile);
-          }, 
+          },
           error: (err) => {
             console.log(err);
             this.alertService.error('Error!', 'Cant select the document');
-          }
+          },
         });
 
+        this.destroyRef.onDestroy(() => {
+          uploadDocumentSubscription.unsubscribe();
+        });
       }
     }
 
@@ -518,25 +560,12 @@ export class CreateEvent implements OnInit, OnChanges {
     }
   }
 
-
-
-
   selectedCar?: number;
 
   cars = [
-      { id: 1, name: 'Volvo' },
-      { id: 2, name: 'Saab' },
-      { id: 3, name: 'Opel' },
-      { id: 4, name: 'Audi' },
+    { id: 1, name: 'Volvo' },
+    { id: 2, name: 'Saab' },
+    { id: 3, name: 'Opel' },
+    { id: 4, name: 'Audi' },
   ];
-
-
-
-
-
-
-
-
-
-
 }

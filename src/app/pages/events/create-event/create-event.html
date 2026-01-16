@@ -1,5 +1,5 @@
 <!-- Create Event Modal -->
-@if (isAddEventModalOpen) {
+@if (isOpenModal$ | async) {
   <div class="modal-backdrop" >
     <div class="modal-container modal-lg d-flex flex-column">
       <div class="modal-header d-flex justify-content-between align-items-center">
