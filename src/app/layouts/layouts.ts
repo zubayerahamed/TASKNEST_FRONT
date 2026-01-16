@@ -21,7 +21,6 @@ import { Tag } from '../core/models/tag.model';
 import { AuthHelper } from '../core/helpers/auth.helper';
 import { WorkspaceService } from '../core/services/workspace.service';
 import { JwtPayload } from 'jwt-decode';
-import { RepeaterStateService } from '../core/services/repeater-state.service';
 import { CreateTask } from '../pages/tasks/create-task/create-task';
 import { CreateEvent } from '../pages/events/create-event/create-event';
 import { CreateEventRepeater } from '../pages/events/create-event-repeater/create-event-repeater';
@@ -51,7 +50,6 @@ export class Layouts implements OnInit {
 
   private authService = inject(AuthService);
   private workspaceService = inject(WorkspaceService);
-  private repeaterStateService = inject(RepeaterStateService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
@@ -64,27 +62,9 @@ export class Layouts implements OnInit {
     // Initialize Route
     this.initializeRoute();
 
-    // Repeater
-    this.repeaterStateService.isModalOpen$.subscribe((data) => {
-      if (data === 'OPEN') {
-        this.openRepeaterModal();
-      } else {
-        this.closeRepeaterModal();
-      }
-    });
-
     // Load workspaces here
     this.loadCurrentWorkspace();
     this.loadAvailableWorkspaces();
-  }
-
-  // Repeater modal
-  public isRepeaterModalOpen = false;
-  openRepeaterModal() {
-    this.isRepeaterModalOpen = true;
-  }
-  closeRepeaterModal() {
-    this.isRepeaterModalOpen = false;
   }
 
   // choose default route at the very beginning

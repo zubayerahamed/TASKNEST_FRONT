@@ -23,7 +23,7 @@ import { SidebarStateService } from '../../../core/services/sidebar-state.servic
 import { ProjectPageStateService } from '../../../core/services/porjectpage-state.service';
 import { TodayPageStateService } from '../../../core/services/todaypage-state.service';
 import { DocumentService } from '../../../core/services/document.service';
-import { RepeaterStateService } from '../../../core/services/repeater-state.service';
+import { EventRepeaterModalStateService } from '../../../core/services/event-repeater-modal-state.service';
 import { Project } from '../../../core/models/project.model';
 import { Category } from '../../../core/models/category.model';
 import { ChecklistItem } from '../../../core/models/checklist-item.model';
@@ -57,7 +57,7 @@ export class CreateEvent implements OnInit, OnChanges {
   private projectPageStateService = inject(ProjectPageStateService);
   private todayPageStageService = inject(TodayPageStateService);
   private documentService = inject(DocumentService);
-  private repeaterStateService = inject(RepeaterStateService);
+  private repeaterStateService = inject(EventRepeaterModalStateService);
   private eventModalStateService = inject(EventModalStateService);
 
   // State observables
@@ -105,7 +105,7 @@ export class CreateEvent implements OnInit, OnChanges {
   }
 
   onOpenRepeater() {
-    this.repeaterStateService.updateModalStatus('OPEN');
+    this.repeaterStateService.openModal();
   }
 
   initializeDateTime() {
@@ -147,17 +147,17 @@ export class CreateEvent implements OnInit, OnChanges {
     if (this.selectedProjectId == null) return;
 
     // Fetch the categories for the selected project.
-     const categorySubscription = this.categoryService
-      .getAllProjectCategories(this.selectedProjectId)
-      .subscribe({
-        next: (resData) => {
-          this.categories = resData.data || [];
-          this.categories = this.categories.filter((cat) => cat.isForEvent);
-        },
-        error: (error) => {
-          console.error('Error fetching categories:', error);
-        },
-      });
+    const categorySubscription = this.categoryService
+    .getAllProjectCategories(this.selectedProjectId)
+    .subscribe({
+      next: (resData) => {
+        this.categories = resData.data || [];
+        this.categories = this.categories.filter((cat) => cat.isForEvent);
+      },
+      error: (error) => {
+        console.error('Error fetching categories:', error);
+      },
+    });
 
     this.destroyRef.onDestroy(() => {
       categorySubscription.unsubscribe();
