@@ -62,6 +62,8 @@ export class CreateEvent implements OnInit, OnChanges {
 
     // State observables
     isOpenModal$ = this.eventModalStateService.isModalOpen$;
+    eventRepeaterObject$ = this.repeaterStateService.eventRepeaterObject$;
+    repeaterDetails$ = this.repeaterStateService.repeaterDetails$;
 
     // Data properties
     public projects: Project[] = [];
@@ -376,6 +378,7 @@ export class CreateEvent implements OnInit, OnChanges {
         this.participantSearchQuery = '';
         //this.isAddEventModalClose.emit();
         this.eventModalStateService.closeModal();
+        this.repeaterStateService.setEventRepeaterObject(null);
     }
 
     onEventModalBackdropClick(event: Event) {

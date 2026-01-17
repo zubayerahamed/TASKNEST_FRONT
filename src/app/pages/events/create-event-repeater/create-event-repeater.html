@@ -172,18 +172,10 @@
                         name="enteredRepeatMonth" 
                         [(ngModel)]="enteredRepeatMonth"
                         (change)="updateDaysInMonth()">
-                        <option value="JAN">January</option>
-                        <option value="FEB">February</option>
-                        <option value="MAR">March</option>
-                        <option value="APR">April</option>
-                        <option value="MAY">May</option>
-                        <option value="JUN">June</option>
-                        <option value="JUL">July</option>
-                        <option value="AUG">August</option>
-                        <option value="SEP">September</option>
-                        <option value="OCT">October</option>
-                        <option value="NOV">November</option>
-                        <option value="DEC">December</option>
+
+                        @for (wdm of weekDayOfMonths; track wdm) {
+                            <option [value]="wdm">{{ wdm | titlecase }}</option>
+                        }
                     </select>
                 </div>
                 }
@@ -213,7 +205,7 @@
 
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="onCloseRepeater()">Close</button>
-            <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center">
+            <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center" (click)="onCreateRepeater()">
                 <i class="ph ph-floppy-disk me-2"></i><span>Save</span>
             </button>
         </div>

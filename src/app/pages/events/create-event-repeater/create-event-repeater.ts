@@ -37,11 +37,13 @@ export class CreateEventRepeater implements OnInit, OnChanges {
     DataType = DataType;
     WeekDayPosition = WeekDayPosition;
     WeekDay = WeekDay;
+    WeekDayOfMonth = WeekDayOfMonth;
     daysInMonth: number[] = this.getDaysInMonth();
 
     eventRepeatTypes = Object.values(EventRepeatType);
     weekDayPositions = Object.values(WeekDayPosition);
     weekDays = Object.values(WeekDay);
+    weekDayOfMonths = Object.values(WeekDayOfMonth);
 
     // Form Data
     enteredRepeatEvery: number = 1;
@@ -61,7 +63,7 @@ export class CreateEventRepeater implements OnInit, OnChanges {
 
     // For YEAR repeat type
     enteredFixedDate: string = '1';
-    enteredRepeatMonth: string = 'JAN';
+    enteredRepeatMonth: WeekDayOfMonth = WeekDayOfMonth.JAN;
 
 
     enteredStartDate: string = new Date().toISOString().split('T')[0];
@@ -76,7 +78,7 @@ export class CreateEventRepeater implements OnInit, OnChanges {
         this.enteredRepeatFixedDates = [];
         this.enteredWeekdayPosition = WeekDayPosition.FIRST;
         this.enteredRepeatWeekday = WeekDay.SUN;
-        this.enteredRepeatMonth = 'JAN';
+        this.enteredRepeatMonth = WeekDayOfMonth.JAN;
         this.enteredFixedDate = '1';
         
     }
@@ -104,7 +106,8 @@ export class CreateEventRepeater implements OnInit, OnChanges {
     initializeDateTime() {
         const now = new Date();
         this.enteredStartDate = now.toISOString().split('T')[0];
-        this.enteredEndDate = now.toISOString().split('T')[0];
+        // End date will be next date
+        this.enteredEndDate = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     }
 
     clampRepeatEvery() {
@@ -231,16 +234,21 @@ export class CreateEventRepeater implements OnInit, OnChanges {
             // For YEAR repeat type
             fixedDate: this.enteredFixedDate,
             fixedMonth: this.enteredRepeatMonth,
-            weekDayOfMonth: WeekDayOfMonth.JAN,
+            weekDayOfMonth: this.enteredRepeatMonth,
+
             startDate: new Date(this.enteredStartDate),
             endDate: new Date(this.enteredEndDate),
         }
 
+        //console.log('Creating Event Repeater:', eventRepeater);
+        //if(1 == 1) return;
+
         const createRepeaterSubs = this.eventRepeaterService.createEventRepeater(eventRepeater).subscribe({
             next: (response) => {
                 this.alertService.success('Success!', 'Repeater created successfully!');
-
+                console.log('Event Repeater created successfully:', response);
                 // Handle success (e.g., show a success message, close modal, etc.)
+                this.repeaterStateService.setEventRepeaterObject(response.data);
                 this.repeaterStateService.closeModal();
             },
             error: (error) => {

@@ -8,15 +8,24 @@
                 <h4 class="modal-title">Create New Event</h4>
             </div>
             <div class="d-flex align-items-center gap-4">
-                <button class="btn btn-sm btn-secondary" (click)="onOpenRepeater()">
+                @if (eventRepeaterObject$ | async; as repeater) {
+                    @if (repeater !== null) {
+                        <button class="btn btn-sm btn-secondary" (click)="onOpenRepeater()">
+                        <i class="ph ph-repeat"></i> Edit Repeats
+                        </button>
+                    } 
+                } @else {
+                    <button class="btn btn-sm btn-secondary" (click)="onOpenRepeater()">
                     <i class="ph ph-repeat"></i> Set Repeats
-                </button>
+                    </button>
+                }
                 <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="closeAddEventModal()">
                     <i class="ph ph-x fs-4"></i>
                 </button>
             </div>
         </div>
         <div class="modal-body flex-grow-1">
+            <p>{{ repeaterDetails$ | async }}</p>
             <form>
                 <div class="row">
 
