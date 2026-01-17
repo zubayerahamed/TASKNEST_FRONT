@@ -5,50 +5,50 @@ import { BaseService } from './base.service';
 import { AddEvent, UpdateEvent } from '../models/event.model';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class EventService extends BaseService {
-  constructor(private http: HttpClient) {
-    super();
-  }
+    constructor(private http: HttpClient) {
+        super();
+    }
 
-  getAllEvents(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/events/all/${id}`);
-  }
+    getAllEvents(id: number): Observable<any> {
+        return this.http.get(`${this.baseUrl}/events/all/${id}`);
+    }
 
-  getAllCompleteEvents(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/events/all/complete/${id}`);
-  }
+    getAllCompleteEvents(id: number): Observable<any> {
+        return this.http.get(`${this.baseUrl}/events/all/complete/${id}`);
+    }
 
-  getAllInCompleteEvents(id: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/events/all/incomplete/${id}`);
-  }
+    getAllInCompleteEvents(id: number): Observable<any> {
+        return this.http.get(`${this.baseUrl}/events/all/incomplete/${id}`);
+    }
 
-  createEvent(data: AddEvent): Observable<any> {
-    return this.http.post(`${this.baseUrl}/events`, data);
-  }
+    createEvent(data: AddEvent): Observable<any> {
+        return this.http.post(`${this.baseUrl}/events`, data);
+    }
 
-  updateEvent(data: UpdateEvent): Observable<any> {
-    return this.http.put(`${this.baseUrl}/events`, data);
-  }
+    updateEvent(data: UpdateEvent): Observable<any> {
+        return this.http.put(`${this.baseUrl}/events`, data);
+    }
 
-  deleteEvent(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/events/${id}`);
-  }
+    deleteEvent(id: number): Observable<any> {
+        return this.http.delete(`${this.baseUrl}/events/${id}`);
+    }
 
-  markCompleteEvent(eventId: number): Observable<any> {
-    return this.http.put(`${this.baseUrl}/events/markcomplete/${eventId}`, {});
-  }
+    markCompleteEvent(eventId: number): Observable<any> {
+        return this.http.put(`${this.baseUrl}/events/markcomplete/${eventId}`, {});
+    }
 
-  markInCompleteEvent(eventId: number): Observable<any> {
-    return this.http.put(`${this.baseUrl}/events/markincomplete/${eventId}`, {});
-  }
+    markInCompleteEvent(eventId: number): Observable<any> {
+        return this.http.put(`${this.baseUrl}/events/markincomplete/${eventId}`, {});
+    }
 
-  markCompleteEventChecklist(eventId: number): Observable<any> {
-    return this.http.put(`${this.baseUrl}/events/checklist/markcomplete/${eventId}`, {});
-  }
+    markCompleteEventChecklist(eventId: number): Observable<any> {
+        return this.http.put(`${this.baseUrl}/events/checklist/markcomplete/${eventId}`, {});
+    }
 
-  markInCompleteEventChecklist(eventId: number): Observable<any> {
-    return this.http.put(`${this.baseUrl}/events/checklist/markincomplete/${eventId}`, {});
-  }
+    markInCompleteEventChecklist(eventId: number): Observable<any> {
+        return this.http.put(`${this.baseUrl}/events/checklist/markincomplete/${eventId}`, {});
+    }
 }

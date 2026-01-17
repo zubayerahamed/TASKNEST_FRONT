@@ -1,209 +1,222 @@
 @if (isOpenModal$ | async) {
-    <div class="modal-backdrop">
-        <div class="modal-container modal-lg d-flex flex-column">
-            <div class="modal-header d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                    <i class="ph ph-repeat me-2 fs-4"></i>
-                    <h4 class="modal-title">Customize Repeat</h4>
-                </div>
-                <div class="d-flex align-items-center gap-4">
-                    <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="onCloseRepeater()">
-                        <i class="ph ph-x fs-4"></i>
-                    </button>
-                </div>
+<div class="modal-backdrop">
+    <div class="modal-container modal-lg d-flex flex-column">
+        <div class="modal-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <h4 class="modal-title">Customize Repeat</h4>
             </div>
-
-            <div class="modal-body flex-grow-1">
-                
-                <div class="row">
-                    <div class="col-md-2">
-                        <label for="email" class="form-label mb-3">Repeat every</label>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <div class="input-group">
-                            <span class="input-group-text"><i class="ph ph-minus"></i></span>
-                            <input type="text" class="form-control text-center" min="1" [(ngModel)]="enteredRepeatEvery">
-                            <span class="input-group-text"><i class="ph ph-plus"></i></span>
-                        </div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <select class="form-select" [(ngModel)]="enteredRepeatType">
-                            <option value="DAY">Day</option>
-                            <option value="WEEK">Week</option>
-                            <option value="MONTH">Month</option>
-                            <option value="YEAR">Year</option>
-                        </select>
-                    </div>
-                </div>
-                
-                @if(enteredRepeatType == 'DAY'){
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" [(ngModel)]="enteredSkipWeekends">
-                                <label class="form-check-label form-label" for="flexCheckDefault">
-                                    Skip Weekdends
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                }
-                
-                @if(enteredRepeatType == 'WEEK'){
-                    <div class="row">
-                        <label for="eventDate" class="form-label me-3">Days of week</label>
-                        <div class="col-md-12 mb-3">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="SAT" value="SAT">
-                                <label class="form-check-label" for="SAT">Sat</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="SUN" value="SUN">
-                                <label class="form-check-label" for="SUN">Sun</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="MON" value="MON">
-                                <label class="form-check-label" for="MON">Mon</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="TUE" value="TUE">
-                                <label class="form-check-label" for="TUE">Tue</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="WED" value="WED">
-                                <label class="form-check-label" for="WED">Wed</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="THU" value="THU">
-                                <label class="form-check-label" for="THU">Thu</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="checkbox" id="FRI" value="FRI">
-                                <label class="form-check-label" for="FRI">Fri</label>
-                            </div>
-                        </div>
-                    </div>
-                }
-                
-                @if(enteredRepeatType == 'MONTH' || enteredRepeatType == 'YEAR'){
-                    <div class="row">
-
-                        <div class="col-md-12">
-                            @if (enteredRepeatType == 'MONTH' || enteredRepeatType == 'YEAR') {
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="FIXED_DATE" [(ngModel)]="enteredDataType">
-                                    <label class="form-check-label" for="inlineRadio1">Fixed date</label>
-                                </div>
-                            }
-                            
-                            @if (enteredRepeatType == 'MONTH') {
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="WEEK_DAY_OF_MONTH" [(ngModel)]="enteredDataType">
-                                    <label class="form-check-label" for="inlineRadio2">Weekday of month</label>
-                                </div>
-                            }
-                            
-                            @if (enteredRepeatType == 'YEAR') {
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="WEEK_DAY_OF_YEAR" [(ngModel)]="enteredDataType">
-                                    <label class="form-check-label" for="inlineRadio2">Weekday of year</label>
-                                </div>
-                            }
-                        </div>
-
-                        @if (enteredRepeatType == 'MONTH' && enteredDataType == 'FIXED_DATE') {
-                            <div class="col-md-12 p-2">
-                                @for (day of daysInMonth; track $index) {
-                                    <div class="custom-date-button">{{ day }}</div>
-                                }
-                            </div>
-                        }
-
-                        @if (enteredRepeatType == 'YEAR' && enteredDataType == 'FIXED_DATE') {
-                            <div class="col-md-3">
-                                <select class="form-select mb-3">
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                </select>
-                            </div>
-                        }
-
-                        @if ((enteredRepeatType == 'MONTH' && enteredDataType == 'WEEK_DAY_OF_MONTH') || (enteredRepeatType == 'YEAR' && enteredDataType == 'WEEK_DAY_OF_YEAR')) {
-                            <div class="col-md-3">
-                                <select class="form-select mb-3">
-                                    <option value="FIRST">First</option>
-                                    <option value="SECOND">Second</option>
-                                    <option value="THIRD">Third</option>
-                                    <option value="FOURTH">Fourth</option>
-                                    <option value="FIFTH">Fifth</option>
-                                    <option value="LAST">Last</option>
-                                </select>
-                            </div>
-                        }
-
-                        @if ((enteredRepeatType == 'MONTH' && enteredDataType == 'WEEK_DAY_OF_MONTH') || (enteredRepeatType == 'YEAR' && enteredDataType == 'WEEK_DAY_OF_YEAR')) {
-                            <div class="col-md-3">
-                                <select class="form-select mb-3">
-                                    <option value="SAT">Saturday</option>
-                                    <option value="SUN">Sunday</option>
-                                    <option value="MON">Monday</option>
-                                    <option value="TUE">Tuesday</option>
-                                    <option value="WED">Wednsday</option>
-                                    <option value="THU">Thursday</option>
-                                    <option value="FRI">Friday</option>
-                                </select>
-                            </div>
-                        }
-
-                        @if ((enteredRepeatType == 'YEAR' && enteredDataType == 'FIXED_DATE') || (enteredRepeatType == 'YEAR' && enteredDataType == 'WEEK_DAY_OF_YEAR')) {
-                            <div class="col-md-3">
-                                <select class="form-select mb-3">
-                                    <option value="JAN">January</option>
-                                    <option value="FEB">February</option>
-                                    <option value="MAR">March</option>
-                                    <option value="APR">April</option>
-                                    <option value="MAY">May</option>
-                                    <option value="JUN">June</option>
-                                    <option value="JUL">July</option>
-                                    <option value="AUG">August</option>
-                                    <option value="SEP">September</option>
-                                    <option value="OCT">October</option>
-                                    <option value="NOV">November</option>
-                                    <option value="DEC">December</option>
-                                </select>
-                            </div>
-                        }
-                    </div>
-                }       
-
-                <div class="divider mb-3"></div>
-                
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="mb-3">
-                            <label for="enteredStartDate" class="form-label">Start Date <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control"  mwlFlatpickr [(ngModel)]="enteredStartDate" id="enteredStartDate" name="enteredStartDate"/>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="mb-3">
-                            <label for="enteredEndDate" class="form-label">End Date <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control"  mwlFlatpickr [(ngModel)]="enteredEndDate" id="enteredEndDate" name="enteredEndDate"/>
-                        </div>
-                    </div>
-                </div>
-               
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" (click)="onCloseRepeater()">Cancel</button>
-                <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center">
-                    <i class="ph ph-floppy-disk me-2"></i><span>Save</span>
+            <div class="d-flex align-items-center gap-4">
+                <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="onCloseRepeater()">
+                    <i class="ph ph-x fs-4"></i>
                 </button>
             </div>
         </div>
+
+        <div class="modal-body flex-grow-1">
+
+            <div class="row">
+                <div class="col-md-2">
+                    <label for="email" class="form-label mb-3">Repeat every</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text" style="cursor: pointer;" (click)="enteredRepeatEvery = enteredRepeatEvery <= 1 ? 1 : enteredRepeatEvery - 1"><i class="ph ph-minus"></i></span>
+                        <input type="number" class="form-control text-center" min="1" max="9999" 
+                            [(ngModel)]="enteredRepeatEvery" 
+                            (change)="clampRepeatEvery()"
+                            (keydown)="repeatEveryKeyRestriction($event)"/>
+                        <span class="input-group-text" style="cursor: pointer;" (click)="enteredRepeatEvery = enteredRepeatEvery >= 9999 ? 9999 : enteredRepeatEvery + 1"><i class="ph ph-plus"></i></span>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <select class="form-select" 
+                        [(ngModel)]="enteredRepeatType" 
+                        (change)="resetForm()">
+                        @for(ert of eventRepeatTypes; track ert) {
+                            <option [value]="ert">{{ ert | titlecase }}</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            @if(enteredRepeatType === EventRepeatType.DAY){
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="enteredSkipWeekends" name="enteredSkipWeekends" [(ngModel)]="enteredSkipWeekends">
+                        <label class="form-check-label form-label" for="enteredSkipWeekends">
+                            Skip Weekdends
+                        </label>
+                    </div>
+                </div>
+            </div>
+            }
+
+            @if(enteredRepeatType === EventRepeatType.WEEK){
+            <div class="row">
+                <label for="eventDate" class="form-label me-3">Days of week</label>
+                <div class="col-md-12 mb-3">
+                    @for (day of weekDays; track day) {
+                        <div class="form-check form-check-inline">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                [id]="'WEEK_DAY_' + day"
+                                [value]="day"
+                                [checked]="enteredRepeatOnDays.includes(day)"
+                                (change)="onDayToggle(day, $event)"
+                            />
+                            <label class="form-check-label" [for]="'WEEK_DAY_' + day">
+                                {{ day | titlecase}}
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            }
+
+            @if(enteredRepeatType === EventRepeatType.MONTH || enteredRepeatType === EventRepeatType.YEAR){
+            <div class="row">
+
+                <div class="col-md-12">
+                    @if (enteredRepeatType === EventRepeatType.MONTH || enteredRepeatType === EventRepeatType.YEAR) {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" 
+                            type="radio" name="enteredDataType" id="fixedDate" 
+                            [value]="DataType.FIXED_DATE"
+                            [(ngModel)]="enteredDataType">
+                        <label class="form-check-label" for="fixedDate">Fixed date</label>
+                    </div>
+                    }
+
+                    @if (enteredRepeatType === EventRepeatType.MONTH) {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" 
+                        type="radio" name="enteredDataType" id="weekdayOfMonth" 
+                        [value]="DataType.WEEK_DAY_OF_MONTH"
+                        [(ngModel)]="enteredDataType">
+                        <label class="form-check-label" for="weekdayOfMonth">Weekday of month</label>
+                    </div>
+                    }
+
+                    @if (enteredRepeatType === EventRepeatType.YEAR) {
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" 
+                            type="radio" name="enteredDataType" id="weekdayOfYear" 
+                            [value]="DataType.WEEK_DAY_OF_YEAR"
+                            [(ngModel)]="enteredDataType">
+                        <label class="form-check-label" for="weekdayOfYear">Weekday of year</label>
+                    </div>
+                    }
+                </div>
+
+                @if (enteredRepeatType === EventRepeatType.MONTH && enteredDataType === DataType.FIXED_DATE) {
+                <div class="col-md-12 p-2">
+                    @for (day of daysInMonth; track $index) {
+                    <!-- <div class="custom-date-button">{{ day }}</div> -->
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" 
+                            type="checkbox" 
+                            id="DATE_{{ day }}" 
+                            value="{{ day }}"
+                            [checked]="enteredRepeatFixedDates.includes(day)"
+                            (change)="onFixedDateSelect(day, $event)">
+                        <label class="form-check-label" for="DATE_{{ day }}">{{ day }}</label>
+                    </div>
+                    }
+                </div>
+                }
+
+                @if (enteredRepeatType === EventRepeatType.YEAR && enteredDataType === DataType.FIXED_DATE) {
+                <div class="col-md-3">
+                    <select class="form-select mb-3" name="enteredFixedDate"
+                        [(ngModel)]="enteredFixedDate">
+                        @for (day of daysInMonth; track $index) {
+                            <option value="{{ day }}">{{ day }}</option>
+                        }
+                    </select>
+                </div>
+                }
+
+                @if ((enteredRepeatType === EventRepeatType.MONTH && enteredDataType === DataType.WEEK_DAY_OF_MONTH) || (enteredRepeatType === EventRepeatType.YEAR && enteredDataType === DataType.WEEK_DAY_OF_YEAR)) {
+                <div class="col-md-3">
+                    <select class="form-select mb-3" name="enteredWeekdayPosition" 
+                        [(ngModel)]="enteredWeekdayPosition">
+                        @for(wdp of weekDayPositions; track wdp) {
+                            <option [value]="wdp">{{ wdp | titlecase }}</option>
+                        }
+                    </select>
+                </div>
+                }
+
+                @if ((enteredRepeatType === EventRepeatType.MONTH && enteredDataType === DataType.WEEK_DAY_OF_MONTH) || (enteredRepeatType === EventRepeatType.YEAR && enteredDataType === DataType.WEEK_DAY_OF_YEAR)) {
+                <div class="col-md-3">
+                    <select class="form-select mb-3" name="enteredRepeatWeekday" 
+                        [(ngModel)]="enteredRepeatWeekday">
+                        <option [value]="WeekDay.SUN">Sunday</option>
+                        <option [value]="WeekDay.MON">Monday</option>
+                        <option [value]="WeekDay.TUE">Tuesday</option>
+                        <option [value]="WeekDay.WED">Wednsday</option>
+                        <option [value]="WeekDay.THU">Thursday</option>
+                        <option [value]="WeekDay.FRI">Friday</option>
+                        <option [value]="WeekDay.SAT">Saturday</option>
+                    </select>
+                </div>
+                }
+
+                @if ((enteredRepeatType === EventRepeatType.YEAR && enteredDataType === DataType.FIXED_DATE) || (enteredRepeatType === EventRepeatType.YEAR && enteredDataType === DataType.WEEK_DAY_OF_YEAR)) {
+                <div class="col-md-3">
+                    <select class="form-select mb-3" 
+                        name="enteredRepeatMonth" 
+                        [(ngModel)]="enteredRepeatMonth"
+                        (change)="updateDaysInMonth()">
+                        <option value="JAN">January</option>
+                        <option value="FEB">February</option>
+                        <option value="MAR">March</option>
+                        <option value="APR">April</option>
+                        <option value="MAY">May</option>
+                        <option value="JUN">June</option>
+                        <option value="JUL">July</option>
+                        <option value="AUG">August</option>
+                        <option value="SEP">September</option>
+                        <option value="OCT">October</option>
+                        <option value="NOV">November</option>
+                        <option value="DEC">December</option>
+                    </select>
+                </div>
+                }
+            </div>
+            }
+
+            <div class="divider mb-3"></div>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="enteredStartDate" class="form-label">Starting From <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control"  id="enteredStartDate" name="enteredStartDate" mwlFlatpickr
+                        [(ngModel)]="enteredStartDate"/>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="enteredEndDate" class="form-label">Ends <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="enteredEndDate" name="enteredEndDate" mwlFlatpickr
+                        [(ngModel)]="enteredEndDate" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="onCloseRepeater()">Close</button>
+            <button type="button" class="btn btn-primary d-flex align-items-center justify-content-center">
+                <i class="ph ph-floppy-disk me-2"></i><span>Save</span>
+            </button>
+        </div>
     </div>
+</div>
 }

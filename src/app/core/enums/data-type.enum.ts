@@ -1,0 +1,5 @@
+export enum DataType{
+    FIXED_DATE = 'FIXED_DATE',
+	WEEK_DAY_OF_MONTH = 'WEEK_DAY_OF_MONTH',
+    WEEK_DAY_OF_YEAR = 'WEEK_DAY_OF_YEAR'   
+}

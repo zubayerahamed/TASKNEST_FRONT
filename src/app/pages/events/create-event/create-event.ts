@@ -1,19 +1,19 @@
 import {
-  Component,
-  DestroyRef,
-  EventEmitter,
-  inject,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-  SimpleChanges,
+    Component,
+    DestroyRef,
+    EventEmitter,
+    inject,
+    Input,
+    OnChanges,
+    OnInit,
+    Output,
+    SimpleChanges,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import {
-  FlatpickrDirective,
-  provideFlatpickrDefaults,
+    FlatpickrDirective,
+    provideFlatpickrDefaults,
 } from 'angularx-flatpickr';
 import { AlertService } from '../../../core/services/alert.service';
 import { ProjectService } from '../../../core/services/project.service';
@@ -30,8 +30,8 @@ import { ChecklistItem } from '../../../core/models/checklist-item.model';
 import { AddEvent, EventDto } from '../../../core/models/event.model';
 import { Participant } from '../../../core/models/participant.model';
 import {
-  AttachedFile,
-  Document,
+    AttachedFile,
+    Document,
 } from '../../../core/models/attached-file.model';
 import { EventModalStateService } from '../../../core/services/event-modal-state.service';
 import { AsyncPipe } from '@angular/common';
@@ -39,533 +39,533 @@ import { Subject } from 'rxjs';
 // import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectConfig } from '@ng-select/ng-select';
 
 @Component({
-  selector: 'app-create-event',
-  imports: [FormsModule, FlatpickrDirective, AsyncPipe],
-  providers: [provideFlatpickrDefaults()],
-  standalone: true,
-  templateUrl: './create-event.html',
-  styleUrl: './create-event.css',
+    selector: 'app-create-event',
+    imports: [FormsModule, FlatpickrDirective, AsyncPipe],
+    providers: [provideFlatpickrDefaults()],
+    standalone: true,
+    templateUrl: './create-event.html',
+    styleUrl: './create-event.css',
 })
 export class CreateEvent implements OnInit, OnChanges {
 
-  private destroyRef = inject(DestroyRef);
-  private alertService = inject(AlertService);
-  private projectService = inject(ProjectService);
-  private categoryService = inject(CategoryService);
-  private eventService = inject(EventService);
-  private sidebarStateService = inject(SidebarStateService);
-  private projectPageStateService = inject(ProjectPageStateService);
-  private todayPageStageService = inject(TodayPageStateService);
-  private documentService = inject(DocumentService);
-  private repeaterStateService = inject(EventRepeaterModalStateService);
-  private eventModalStateService = inject(EventModalStateService);
-
-  // State observables
-  isOpenModal$ = this.eventModalStateService.isModalOpen$;
-
-  // Data properties
-  public projects: Project[] = [];
-  public categories: Category[] = [];
-  public checklistItems: ChecklistItem[] = [];
-
-  // Form properties
-  enteredEventDate: string = new Date().toISOString().split('T')[0];
-  enteredEventStartTime: string = '';
-  enteredEventEndTime: string = '';
-  enteredEventTitle: string = '';
-  enteredEventDescription: string = '';
-  selectedProjectId: number | null = null;
-  selectedCategoryId: number | null = null;
-  enteredEventLocation: string = '';
-  selectedReminder: number | null = null;
-  enteredEventLink: string = '';
-
-  // Form error properties
-  eventDateError: string = '';
-  eventStartTimeError: string = '';
-  eventEndTimeError: string = '';
-  eventTitleError: string = '';
-  eventProjectError: string = '';
-
-  ngOnInit() {
-    const eventModalSubs = this.eventModalStateService.isModalOpen$.subscribe({
-      next: (data) => {
-        this.initializeDateTime();
-        this.loadProjects();
-      },
-    });
-
-    this.destroyRef.onDestroy(() => {
-      eventModalSubs.unsubscribe();
-    });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    
-  }
-
-  onOpenRepeater() {
-    this.repeaterStateService.openModal();
-  }
-
-  initializeDateTime() {
-    const now = new Date();
-
-    this.enteredEventDate = now.toISOString().split('T')[0];
-
-    // Format as HH:mm for <input type="time">
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-
-    this.enteredEventStartTime = `${hours}:${minutes}`;
-
-    // Set end time to one hour later
-    const endTime = new Date(now.getTime() + 60 * 60 * 1000);
-    const endHours = endTime.getHours().toString().padStart(2, '0');
-    const endMinutes = endTime.getMinutes().toString().padStart(2, '0');
-    this.enteredEventEndTime = `${endHours}:${endMinutes}`;
-  }
-
-  loadProjects() {
-    console.log('Loading projects...');
-    // Fetch projects from the service
-    const projectSubscription = this.projectService.getAllProjects().subscribe({
-      next: (resData) => {
-        this.projects = resData.data || [];
-      },
-      error: (error) => {
-        console.error('Error fetching projects:', error);
-      },
-    });
-
-    this.destroyRef.onDestroy(() => {
-      projectSubscription.unsubscribe();
-    });
-  }
-
-  onProjectChange(event: EventDto) {
-    if (this.selectedProjectId == null) return;
-
-    // Fetch the categories for the selected project.
-    const categorySubscription = this.categoryService
-    .getAllProjectCategories(this.selectedProjectId)
-    .subscribe({
-      next: (resData) => {
-        this.categories = resData.data || [];
-        this.categories = this.categories.filter((cat) => cat.isForEvent);
-      },
-      error: (error) => {
-        console.error('Error fetching categories:', error);
-      },
-    });
-
-    this.destroyRef.onDestroy(() => {
-      categorySubscription.unsubscribe();
-    });
-  }
-
-  resetForm() {
-    this.enteredEventDate = new Date().toISOString().split('T')[0];
-    this.enteredEventStartTime = '';
-    this.enteredEventEndTime = '';
-    this.enteredEventTitle = '';
-    this.enteredEventDescription = '';
-    this.selectedProjectId = null;
-    this.selectedCategoryId = null;
-    this.enteredEventLocation = '';
-    this.selectedReminder = null;
-    this.enteredEventLink = '';
-    this.checklistItems = [];
-    this.attachedFiles = [];
-
-    this.resetErrorMessages();
-  }
-
-  resetErrorMessages() {
-    this.eventDateError = '';
-    this.eventStartTimeError = '';
-    this.eventEndTimeError = '';
-    this.eventTitleError = '';
-    this.eventProjectError = '';
-  }
-
-  validateForm(): boolean {
-    // Reset errors
-    this.resetErrorMessages();
-    let isValid = true;
-
-    if (this.enteredEventTitle.trim().length === 0) {
-      this.eventTitleError = 'Event title is required.';
-      isValid = false;
-    }
-
-    if (this.enteredEventDate.trim().length === 0) {
-      this.eventDateError = 'Event date is required.';
-      isValid = false;
-    } else {
-      const entered = new Date(this.enteredEventDate);
-      const today = new Date();
-
-      // reset time part for accurate comparison
-      entered.setHours(0, 0, 0, 0);
-      today.setHours(0, 0, 0, 0);
-
-      if (entered < today) {
-        this.eventDateError = 'Event date cannot be before today.';
-        isValid = false;
-      }
-    }
-
-    if (this.enteredEventStartTime.trim().length === 0) {
-      this.eventStartTimeError = 'Event start time is required.';
-      isValid = false;
-    }
-
-    if (this.enteredEventEndTime.trim().length === 0) {
-      this.eventEndTimeError = 'Event end time is required.';
-      isValid = false;
-    }
-
-    // check if end time is after start time
-    if (this.enteredEventStartTime && this.enteredEventEndTime) {
-      const start = this.enteredEventStartTime;
-      const end = this.enteredEventEndTime;
-
-      if (start >= end) {
-        this.eventEndTimeError = 'End time must be after start time.';
-        isValid = false;
-      }
-    }
-
-    if (this.selectedProjectId == null) {
-      this.eventProjectError = 'Please select a project.';
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  onCreateEvent() {
-    if (!this.validateForm()) return;
-
-    // Prepare event data
-    let eventDate = new Date(this.enteredEventDate);
-    let formattedDate = eventDate.toISOString().split('T')[0];
-
-    const eventData: AddEvent = {
-      title: this.enteredEventTitle,
-      description: this.enteredEventDescription,
-      projectId: this.selectedProjectId!,
-      categoryId: this.selectedCategoryId!,
-      eventDate: formattedDate,
-      startTime: this.enteredEventStartTime,
-      endTime: this.enteredEventEndTime,
-      location: this.enteredEventLocation,
-      isReminderEnabled: this.selectedReminder != null,
-      reminderBefore: this.selectedReminder || 0,
-      perticipants: [],
-      documents: this.attachedFiles.map((file) => file.id),
-      checklists: this.checklistItems
-        ? this.checklistItems.map((item) => ({
-            description: item.text,
-            isCompleted: item.completed,
-          }))
-        : [],
-      eventLink: this.enteredEventLink,
-    };
-
-    const createEventSubscription = this.eventService.createEvent(eventData).subscribe({
-      next: (resData) => {
-        this.alertService.success('Success!', 'Event created successfully!');
-
-        // Update sidebar and project page
-        this.sidebarStateService.updateSidebarProjects(null);
-        this.sidebarStateService.updatePageCounts(null);
-        this.projectPageStateService.updateProjectPage(null);
-        this.todayPageStageService.updateTodayPage(null);
-        this.closeAddEventModal();
-      },
-      error: (error) => {
-        console.error('Error creating event:', error);
-        this.alertService.error(
-          'Error!',
-          'Failed to create event. Please try again.'
-        );
-      },
-    });
-
-    this.destroyRef.onDestroy(() => {
-      createEventSubscription.unsubscribe();
-    });
-  }
-
-  allParticipants: Participant[] = [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      email: 'jane.smith@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 3,
-      name: 'Mike Johnson',
-      email: 'mike.johnson@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 4,
-      name: 'Sarah Wilson',
-      email: 'sarah.wilson@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 5,
-      name: 'David Brown',
-      email: 'david.brown@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 6,
-      name: 'Emily Davis',
-      email: 'emily.davis@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 7,
-      name: 'Alex Miller',
-      email: 'alex.miller@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 8,
-      name: 'Lisa Anderson',
-      email: 'lisa.anderson@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-  ];
-
-  isParticipantSearchOpen = false;
-  participantSearchQuery = '';
-  newChecklistItem = '';
-  attachedFiles: AttachedFile[] = [];
-
-  selectedParticipants: Participant[] = [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-  ];
-
-  removeParticipant(participantId: number) {
-    this.selectedParticipants = this.selectedParticipants.filter(
-      (p) => p.id !== participantId
-    );
-  }
-
-  closeAddEventModal() {
-    this.resetForm();
-    this.isParticipantSearchOpen = false;
-    this.participantSearchQuery = '';
-    //this.isAddEventModalClose.emit();
-    this.eventModalStateService.closeModal();
-  }
-
-  onEventModalBackdropClick(event: Event) {
-    if (event.target === event.currentTarget) {
-      this.closeAddEventModal();
-    }
-  }
-
-  openParticipantSearch() {
-    this.isParticipantSearchOpen = true;
-    this.participantSearchQuery = '';
-  }
-
-  onParticipantSearchInput(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.participantSearchQuery = target.value;
-  }
-
-  closeParticipantSearch() {
-    this.isParticipantSearchOpen = false;
-    this.participantSearchQuery = '';
-  }
-
-  get filteredParticipants(): Participant[] {
-    if (!this.participantSearchQuery.trim()) {
-      return this.allParticipants.filter(
-        (p) => !this.selectedParticipants.find((sp) => sp.id === p.id)
-      );
-    }
-
-    const query = this.participantSearchQuery.toLowerCase();
-    return this.allParticipants.filter(
-      (participant) =>
-        !this.selectedParticipants.find((sp) => sp.id === participant.id) &&
-        (participant.name.toLowerCase().includes(query) ||
-          participant.email.toLowerCase().includes(query))
-    );
-  }
-
-  addParticipant(participant: Participant) {
-    if (!this.selectedParticipants.find((p) => p.id === participant.id)) {
-      this.selectedParticipants.push(participant);
-    }
-    this.closeParticipantSearch();
-  }
-
-  get completedChecklistCount(): number {
-    return this.checklistItems.filter((item) => item.completed).length;
-  }
-
-  get checklistProgress(): number {
-    if (this.checklistItems.length === 0) return 0;
-    const completedItems = this.checklistItems.filter(
-      (item) => item.completed
-    ).length;
-    return Math.round((completedItems / this.checklistItems.length) * 100);
-  }
-
-  onChecklistInputChange(event: Event) {
-    const target = event.target as HTMLInputElement;
-    this.newChecklistItem = target.value;
-  }
-
-  onChecklistInputKeyPress(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      this.addChecklistItem();
-    }
-  }
-
-  // Checklist management methods
-  addChecklistItem() {
-    if (this.newChecklistItem.trim()) {
-      const newItem: ChecklistItem = {
-        id: Date.now(),
-        text: this.newChecklistItem.trim(),
-        completed: false,
-      };
-      this.checklistItems.push(newItem);
-      this.newChecklistItem = '';
-    }
-  }
-
-  toggleChecklistItem(itemId: number) {
-    const item = this.checklistItems.find((item) => item.id === itemId);
-    if (item) {
-      item.completed = !item.completed;
-    }
-  }
-
-  removeChecklistItem(itemId: number) {
-    this.checklistItems = this.checklistItems.filter(
-      (item) => item.id !== itemId
-    );
-  }
-
-  formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  }
-
-  removeFile(fileId: number) {
-    // Remove from server
-    this.documentService.deleteDocument(fileId).subscribe({
-      next: (resDta) => {
-        this.attachedFiles = this.attachedFiles.filter((f) => f.id !== fileId);
-      },
-      error: (err) => {
-        console.log(err);
-        this.alertService.error('Error!', 'Cant remove the document');
-      },
-    });
-  }
-
-  onFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
-    const files = target.files;
-
-    if (files) {
-      for (let i = 0; i < files.length; i++) {
-        const selectedFile = files[i];
-
-        // Submit file on server
-        const formData = new FormData();
-        formData.append('file', selectedFile);
-        formData.append('title', selectedFile.name);
-        formData.append('description', '');
-
-        const uploadDocumentSubscription = this.documentService.uploadDocument(formData).subscribe({
-          next: (resData) => {
-            const document: Document = resData.data;
-
-            const attachedFile: AttachedFile = {
-              id: document.id,
-              name: document.title,
-              type: selectedFile.type,
-              size: selectedFile.size,
-              icon: this.getFileIcon(selectedFile.name, selectedFile.type),
-            };
-
-            this.attachedFiles.push(attachedFile);
-          },
-          error: (err) => {
-            console.log(err);
-            this.alertService.error('Error!', 'Cant select the document');
-          },
+    private destroyRef = inject(DestroyRef);
+    private alertService = inject(AlertService);
+    private projectService = inject(ProjectService);
+    private categoryService = inject(CategoryService);
+    private eventService = inject(EventService);
+    private sidebarStateService = inject(SidebarStateService);
+    private projectPageStateService = inject(ProjectPageStateService);
+    private todayPageStageService = inject(TodayPageStateService);
+    private documentService = inject(DocumentService);
+    private repeaterStateService = inject(EventRepeaterModalStateService);
+    private eventModalStateService = inject(EventModalStateService);
+
+    // State observables
+    isOpenModal$ = this.eventModalStateService.isModalOpen$;
+
+    // Data properties
+    public projects: Project[] = [];
+    public categories: Category[] = [];
+    public checklistItems: ChecklistItem[] = [];
+
+    // Form properties
+    enteredEventDate: string = new Date().toISOString().split('T')[0];
+    enteredEventStartTime: string = '';
+    enteredEventEndTime: string = '';
+    enteredEventTitle: string = '';
+    enteredEventDescription: string = '';
+    selectedProjectId: number | null = null;
+    selectedCategoryId: number | null = null;
+    enteredEventLocation: string = '';
+    selectedReminder: number | null = null;
+    enteredEventLink: string = '';
+
+    // Form error properties
+    eventDateError: string = '';
+    eventStartTimeError: string = '';
+    eventEndTimeError: string = '';
+    eventTitleError: string = '';
+    eventProjectError: string = '';
+
+    ngOnInit() {
+        const eventModalSubs = this.eventModalStateService.isModalOpen$.subscribe({
+            next: (data) => {
+                this.initializeDateTime();
+                this.loadProjects();
+            },
         });
 
         this.destroyRef.onDestroy(() => {
-          uploadDocumentSubscription.unsubscribe();
+            eventModalSubs.unsubscribe();
         });
-      }
     }
 
-    target.value = '';
-  }
+    ngOnChanges(changes: SimpleChanges): void {
 
-  getFileIcon(fileName: string, fileType: string): string {
-    const extension = fileName.split('.').pop()?.toLowerCase();
-
-    if (fileType.startsWith('image/')) {
-      return 'JPG';
-    } else if (extension === 'pdf') {
-      return 'PDF';
-    } else if (extension === 'doc' || extension === 'docx') {
-      return 'DOC';
-    } else if (extension === 'xls' || extension === 'xlsx') {
-      return 'XLS';
-    } else if (extension === 'ppt' || extension === 'pptx') {
-      return 'PPT';
-    } else if (extension === 'txt') {
-      return 'TXT';
-    } else if (extension === 'zip' || extension === 'rar') {
-      return 'ZIP';
-    } else if (extension === 'csv') {
-      return 'CSV';
-    } else {
-      return 'FILE';
     }
-  }
 
-  selectedCar?: number;
+    onOpenRepeater() {
+        this.repeaterStateService.openModal();
+    }
 
-  cars = [
-    { id: 1, name: 'Volvo' },
-    { id: 2, name: 'Saab' },
-    { id: 3, name: 'Opel' },
-    { id: 4, name: 'Audi' },
-  ];
+    initializeDateTime() {
+        const now = new Date();
+
+        this.enteredEventDate = now.toISOString().split('T')[0];
+
+        // Format as HH:mm for <input type="time">
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+
+        this.enteredEventStartTime = `${hours}:${minutes}`;
+
+        // Set end time to one hour later
+        const endTime = new Date(now.getTime() + 60 * 60 * 1000);
+        const endHours = endTime.getHours().toString().padStart(2, '0');
+        const endMinutes = endTime.getMinutes().toString().padStart(2, '0');
+        this.enteredEventEndTime = `${endHours}:${endMinutes}`;
+    }
+
+    loadProjects() {
+        console.log('Loading projects...');
+        // Fetch projects from the service
+        const projectSubscription = this.projectService.getAllProjects().subscribe({
+            next: (resData) => {
+                this.projects = resData.data || [];
+            },
+            error: (error) => {
+                console.error('Error fetching projects:', error);
+            },
+        });
+
+        this.destroyRef.onDestroy(() => {
+            projectSubscription.unsubscribe();
+        });
+    }
+
+    onProjectChange(event: EventDto) {
+        if (this.selectedProjectId == null) return;
+
+        // Fetch the categories for the selected project.
+        const categorySubscription = this.categoryService
+            .getAllProjectCategories(this.selectedProjectId)
+            .subscribe({
+                next: (resData) => {
+                    this.categories = resData.data || [];
+                    this.categories = this.categories.filter((cat) => cat.isForEvent);
+                },
+                error: (error) => {
+                    console.error('Error fetching categories:', error);
+                },
+            });
+
+        this.destroyRef.onDestroy(() => {
+            categorySubscription.unsubscribe();
+        });
+    }
+
+    resetForm() {
+        this.enteredEventDate = new Date().toISOString().split('T')[0];
+        this.enteredEventStartTime = '';
+        this.enteredEventEndTime = '';
+        this.enteredEventTitle = '';
+        this.enteredEventDescription = '';
+        this.selectedProjectId = null;
+        this.selectedCategoryId = null;
+        this.enteredEventLocation = '';
+        this.selectedReminder = null;
+        this.enteredEventLink = '';
+        this.checklistItems = [];
+        this.attachedFiles = [];
+
+        this.resetErrorMessages();
+    }
+
+    resetErrorMessages() {
+        this.eventDateError = '';
+        this.eventStartTimeError = '';
+        this.eventEndTimeError = '';
+        this.eventTitleError = '';
+        this.eventProjectError = '';
+    }
+
+    validateForm(): boolean {
+        // Reset errors
+        this.resetErrorMessages();
+        let isValid = true;
+
+        if (this.enteredEventTitle.trim().length === 0) {
+            this.eventTitleError = 'Event title is required.';
+            isValid = false;
+        }
+
+        if (this.enteredEventDate.trim().length === 0) {
+            this.eventDateError = 'Event date is required.';
+            isValid = false;
+        } else {
+            const entered = new Date(this.enteredEventDate);
+            const today = new Date();
+
+            // reset time part for accurate comparison
+            entered.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            if (entered < today) {
+                this.eventDateError = 'Event date cannot be before today.';
+                isValid = false;
+            }
+        }
+
+        if (this.enteredEventStartTime.trim().length === 0) {
+            this.eventStartTimeError = 'Event start time is required.';
+            isValid = false;
+        }
+
+        if (this.enteredEventEndTime.trim().length === 0) {
+            this.eventEndTimeError = 'Event end time is required.';
+            isValid = false;
+        }
+
+        // check if end time is after start time
+        if (this.enteredEventStartTime && this.enteredEventEndTime) {
+            const start = this.enteredEventStartTime;
+            const end = this.enteredEventEndTime;
+
+            if (start >= end) {
+                this.eventEndTimeError = 'End time must be after start time.';
+                isValid = false;
+            }
+        }
+
+        if (this.selectedProjectId == null) {
+            this.eventProjectError = 'Please select a project.';
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    onCreateEvent() {
+        if (!this.validateForm()) return;
+
+        // Prepare event data
+        let eventDate = new Date(this.enteredEventDate);
+        let formattedDate = eventDate.toISOString().split('T')[0];
+
+        const eventData: AddEvent = {
+            title: this.enteredEventTitle,
+            description: this.enteredEventDescription,
+            projectId: this.selectedProjectId!,
+            categoryId: this.selectedCategoryId!,
+            eventDate: formattedDate,
+            startTime: this.enteredEventStartTime,
+            endTime: this.enteredEventEndTime,
+            location: this.enteredEventLocation,
+            isReminderEnabled: this.selectedReminder != null,
+            reminderBefore: this.selectedReminder || 0,
+            perticipants: [],
+            documents: this.attachedFiles.map((file) => file.id),
+            checklists: this.checklistItems
+                ? this.checklistItems.map((item) => ({
+                    description: item.text,
+                    isCompleted: item.completed,
+                }))
+                : [],
+            eventLink: this.enteredEventLink,
+        };
+
+        const createEventSubscription = this.eventService.createEvent(eventData).subscribe({
+            next: (resData) => {
+                this.alertService.success('Success!', 'Event created successfully!');
+
+                // Update sidebar and project page
+                this.sidebarStateService.updateSidebarProjects(null);
+                this.sidebarStateService.updatePageCounts(null);
+                this.projectPageStateService.updateProjectPage(null);
+                this.todayPageStageService.updateTodayPage(null);
+                this.closeAddEventModal();
+            },
+            error: (error) => {
+                console.error('Error creating event:', error);
+                this.alertService.error(
+                    'Error!',
+                    'Failed to create event. Please try again.'
+                );
+            },
+        });
+
+        this.destroyRef.onDestroy(() => {
+            createEventSubscription.unsubscribe();
+        });
+    }
+
+    allParticipants: Participant[] = [
+        {
+            id: 1,
+            name: 'John Doe',
+            email: 'john.doe@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 2,
+            name: 'Jane Smith',
+            email: 'jane.smith@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 3,
+            name: 'Mike Johnson',
+            email: 'mike.johnson@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 4,
+            name: 'Sarah Wilson',
+            email: 'sarah.wilson@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 5,
+            name: 'David Brown',
+            email: 'david.brown@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 6,
+            name: 'Emily Davis',
+            email: 'emily.davis@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 7,
+            name: 'Alex Miller',
+            email: 'alex.miller@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 8,
+            name: 'Lisa Anderson',
+            email: 'lisa.anderson@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+    ];
+
+    isParticipantSearchOpen = false;
+    participantSearchQuery = '';
+    newChecklistItem = '';
+    attachedFiles: AttachedFile[] = [];
+
+    selectedParticipants: Participant[] = [
+        {
+            id: 1,
+            name: 'John Doe',
+            email: 'john.doe@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+    ];
+
+    removeParticipant(participantId: number) {
+        this.selectedParticipants = this.selectedParticipants.filter(
+            (p) => p.id !== participantId
+        );
+    }
+
+    closeAddEventModal() {
+        this.resetForm();
+        this.isParticipantSearchOpen = false;
+        this.participantSearchQuery = '';
+        //this.isAddEventModalClose.emit();
+        this.eventModalStateService.closeModal();
+    }
+
+    onEventModalBackdropClick(event: Event) {
+        if (event.target === event.currentTarget) {
+            this.closeAddEventModal();
+        }
+    }
+
+    openParticipantSearch() {
+        this.isParticipantSearchOpen = true;
+        this.participantSearchQuery = '';
+    }
+
+    onParticipantSearchInput(event: Event) {
+        const target = event.target as HTMLInputElement;
+        this.participantSearchQuery = target.value;
+    }
+
+    closeParticipantSearch() {
+        this.isParticipantSearchOpen = false;
+        this.participantSearchQuery = '';
+    }
+
+    get filteredParticipants(): Participant[] {
+        if (!this.participantSearchQuery.trim()) {
+            return this.allParticipants.filter(
+                (p) => !this.selectedParticipants.find((sp) => sp.id === p.id)
+            );
+        }
+
+        const query = this.participantSearchQuery.toLowerCase();
+        return this.allParticipants.filter(
+            (participant) =>
+                !this.selectedParticipants.find((sp) => sp.id === participant.id) &&
+                (participant.name.toLowerCase().includes(query) ||
+                    participant.email.toLowerCase().includes(query))
+        );
+    }
+
+    addParticipant(participant: Participant) {
+        if (!this.selectedParticipants.find((p) => p.id === participant.id)) {
+            this.selectedParticipants.push(participant);
+        }
+        this.closeParticipantSearch();
+    }
+
+    get completedChecklistCount(): number {
+        return this.checklistItems.filter((item) => item.completed).length;
+    }
+
+    get checklistProgress(): number {
+        if (this.checklistItems.length === 0) return 0;
+        const completedItems = this.checklistItems.filter(
+            (item) => item.completed
+        ).length;
+        return Math.round((completedItems / this.checklistItems.length) * 100);
+    }
+
+    onChecklistInputChange(event: Event) {
+        const target = event.target as HTMLInputElement;
+        this.newChecklistItem = target.value;
+    }
+
+    onChecklistInputKeyPress(event: KeyboardEvent) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.addChecklistItem();
+        }
+    }
+
+    // Checklist management methods
+    addChecklistItem() {
+        if (this.newChecklistItem.trim()) {
+            const newItem: ChecklistItem = {
+                id: Date.now(),
+                text: this.newChecklistItem.trim(),
+                completed: false,
+            };
+            this.checklistItems.push(newItem);
+            this.newChecklistItem = '';
+        }
+    }
+
+    toggleChecklistItem(itemId: number) {
+        const item = this.checklistItems.find((item) => item.id === itemId);
+        if (item) {
+            item.completed = !item.completed;
+        }
+    }
+
+    removeChecklistItem(itemId: number) {
+        this.checklistItems = this.checklistItems.filter(
+            (item) => item.id !== itemId
+        );
+    }
+
+    formatFileSize(bytes: number): string {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    removeFile(fileId: number) {
+        // Remove from server
+        this.documentService.deleteDocument(fileId).subscribe({
+            next: (resDta) => {
+                this.attachedFiles = this.attachedFiles.filter((f) => f.id !== fileId);
+            },
+            error: (err) => {
+                console.log(err);
+                this.alertService.error('Error!', 'Cant remove the document');
+            },
+        });
+    }
+
+    onFileSelect(event: Event) {
+        const target = event.target as HTMLInputElement;
+        const files = target.files;
+
+        if (files) {
+            for (let i = 0; i < files.length; i++) {
+                const selectedFile = files[i];
+
+                // Submit file on server
+                const formData = new FormData();
+                formData.append('file', selectedFile);
+                formData.append('title', selectedFile.name);
+                formData.append('description', '');
+
+                const uploadDocumentSubscription = this.documentService.uploadDocument(formData).subscribe({
+                    next: (resData) => {
+                        const document: Document = resData.data;
+
+                        const attachedFile: AttachedFile = {
+                            id: document.id,
+                            name: document.title,
+                            type: selectedFile.type,
+                            size: selectedFile.size,
+                            icon: this.getFileIcon(selectedFile.name, selectedFile.type),
+                        };
+
+                        this.attachedFiles.push(attachedFile);
+                    },
+                    error: (err) => {
+                        console.log(err);
+                        this.alertService.error('Error!', 'Cant select the document');
+                    },
+                });
+
+                this.destroyRef.onDestroy(() => {
+                    uploadDocumentSubscription.unsubscribe();
+                });
+            }
+        }
+
+        target.value = '';
+    }
+
+    getFileIcon(fileName: string, fileType: string): string {
+        const extension = fileName.split('.').pop()?.toLowerCase();
+
+        if (fileType.startsWith('image/')) {
+            return 'JPG';
+        } else if (extension === 'pdf') {
+            return 'PDF';
+        } else if (extension === 'doc' || extension === 'docx') {
+            return 'DOC';
+        } else if (extension === 'xls' || extension === 'xlsx') {
+            return 'XLS';
+        } else if (extension === 'ppt' || extension === 'pptx') {
+            return 'PPT';
+        } else if (extension === 'txt') {
+            return 'TXT';
+        } else if (extension === 'zip' || extension === 'rar') {
+            return 'ZIP';
+        } else if (extension === 'csv') {
+            return 'CSV';
+        } else {
+            return 'FILE';
+        }
+    }
+
+    selectedCar?: number;
+
+    cars = [
+        { id: 1, name: 'Volvo' },
+        { id: 2, name: 'Saab' },
+        { id: 3, name: 'Opel' },
+        { id: 4, name: 'Audi' },
+    ];
 }
