@@ -12,6 +12,7 @@ import { Upcoming } from './pages/upcoming/upcoming';
 import { Completed } from './pages/completed/completed';
 import { WorkspaceSettings } from './pages/workspaces/workspace-settings/workspace-settings';
 import { ProjectSettings } from './pages/project/project-settings/project-settings';
+import { Members } from './pages/members/members';
 
 
 export const routes: Routes = [
@@ -28,6 +29,10 @@ export const routes: Routes = [
       {
         path: 'workspace-settings',
         component: WorkspaceSettings
+      },
+      {
+        path: 'members',
+        component: Members
       },
       {
         path: 'project/:projectId',

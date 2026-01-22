@@ -27,6 +27,10 @@
             <i class="ph ph-gear fs-5 me-3"></i>
             <a routerLink="/workspace-settings" class="page-link">Workspace settings</a>
           </div>
+          <div class="workspace-dropdown-item d-flex align-items-center" (click)="closeWorkspaceDropdown()">
+            <i class="ph ph-user-plus fs-5 me-3"></i>
+            <a routerLink="/members" class="page-link">Add Members</a>
+          </div>
           <!-- Switch to Section -->
           @if(availableWorkspaces.length > 0) {
             <!-- Divider -->
