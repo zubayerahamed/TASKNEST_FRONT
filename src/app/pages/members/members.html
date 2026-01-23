@@ -2,12 +2,62 @@
 <div class="d-flex">
     <div class="col-md-3">
         <div class="mb-3">
-            <input type="email" class="form-control" id="memberEmail" placeholder="Enter email address">
+            <input type="email" class="form-control" id="memberEmail" name="memberEmail" placeholder="Enter email address" [(ngModel)]="enteredMemberEmail">
         </div>
-        <button type="button" class="btn btn-primary">Invite Guest</button>
+        <button type="button" class="btn btn-primary" (click)="inviteGuest()">Invite Guest</button>
     </div>
 </div>
+
+@if(invitations.length !== 0) {
 <div class="divider"></div>
-<div class="col-md-3">
-    Members List
+<div class="row">
+    <p>Pending Invitations List</p>
+    @for (invitation of invitations; track invitation.id) {
+    <div class="col-md-4">
+        <div class="border rounded d-flex justify-content-start align-items-center p-2 gap-2 mb-2">
+            <span>
+                <p class="m-0 mb-1">{{ invitation.email }}</p>
+                <span class="badge bg-secondary rounded-pill">
+                    {{ invitation.inviationDate | date:'short' }}
+                </span>
+            </span>
+
+            <!-- Resend invitation button can be added here -->
+            <span class="d-flex justify-content-end flex-grow-1 gap-2">
+                <button type="button" class="btn btn-sm btn-outline-primary" (click)="resendInvitation(invitation.email)">Resend</button>
+                <button type="button" class="btn btn-sm btn-outline-danger" (click)="deleteInvitation(invitation.email)">Delete</button>
+            </span>
+        </div>
+    </div>
+    }
 </div>
+}
+
+<div class="divider"></div>
+@if (members.length === 0) {
+<p>No members found in this workspace.</p>
+} @else {
+<div class="row">
+    <p>Members List</p>
+    @for (member of members; track member.id) {
+    <div class="col-md-4">
+        <div class="border rounded d-flex justify-content-start align-items-center p-2 gap-2 mb-2">
+            <span>
+                <p class="m-0 mb-1">{{ member.firstName }} {{ member.lastName }}</p>
+                <span class="badge bg-primary rounded-pill">
+                    {{ member.email }}
+                </span>
+                <span class="badge bg-secondary rounded-pill ms-1">
+                    {{ member.userWorkspace?.isAdmin ? 'Admin' : 'Collaborator' }}
+                </span>
+            </span>
+
+            <!-- Resend invitation button can be added here -->
+            <span class="d-flex justify-content-end flex-grow-1 gap-2">
+                <button type="button" class="btn btn-sm btn-outline-danger">Remove</button>
+            </span>
+        </div>
+    </div>
+    }
+</div>
+}

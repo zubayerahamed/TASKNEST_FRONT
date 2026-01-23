@@ -13,6 +13,7 @@ import { Completed } from './pages/completed/completed';
 import { WorkspaceSettings } from './pages/workspaces/workspace-settings/workspace-settings';
 import { ProjectSettings } from './pages/project/project-settings/project-settings';
 import { Members } from './pages/members/members';
+import { AcceptInvitation } from './pages/members/accept-invitation/accept-invitation';
 
 
 export const routes: Routes = [
@@ -33,6 +34,10 @@ export const routes: Routes = [
       {
         path: 'members',
         component: Members
+      },
+      {
+        path: 'accept-invitation/:token',
+        component: AcceptInvitation
       },
       {
         path: 'project/:projectId',
