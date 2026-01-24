@@ -9,15 +9,15 @@
             </div>
             <div class="d-flex align-items-center gap-4">
                 @if (eventRepeaterObject$ | async; as repeater) {
-                    @if (repeater !== null) {
-                        <button class="btn btn-sm btn-secondary" (click)="onOpenRepeater()">
-                        <i class="ph ph-repeat"></i> Edit Repeats
-                        </button>
-                    } 
+                @if (repeater !== null) {
+                <button class="btn btn-sm btn-secondary" (click)="onOpenRepeater()">
+                    <i class="ph ph-repeat"></i> Edit Repeats
+                </button>
+                }
                 } @else {
-                    <button class="btn btn-sm btn-secondary" (click)="onOpenRepeater()">
+                <button class="btn btn-sm btn-secondary" (click)="onOpenRepeater()">
                     <i class="ph ph-repeat"></i> Set Repeats
-                    </button>
+                </button>
                 }
                 <button type="button" class="btn-close d-flex align-items-center justify-content-center" (click)="closeAddEventModal()">
                     <i class="ph ph-x fs-4"></i>
@@ -288,10 +288,10 @@
                         @for(participant of selectedParticipants; track participant.id) {
                         <div class="participant-item">
                             <img
-                                 [src]="participant.avatar"
+                                 [src]="participant.thumbnail ?? '/assets/images/dummy-user.png'"
                                  class="rounded-circle participant-avatar"
-                                 [alt]="participant.name"
-                                 [title]="participant.name + ' - ' + participant.email"
+                                 [alt]="participant.firstName + ' ' + participant.lastName"
+                                 [title]="participant.firstName + ' ' + participant.lastName + ' - ' + participant.email"
                                  data-bs-toggle="tooltip"
                                  data-bs-placement="top">
                             <button type="button" class="participant-remove-btn" (click)="removeParticipant(participant.id)">
@@ -300,8 +300,7 @@
                         </div>
                         }
                         <div class="participant-search-container">
-                            <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center"
-                                    (click)="openParticipantSearch()">
+                            <button type="button" class="btn btn-outline-secondary btn-sm d-flex align-items-center" (click)="openParticipantSearch()">
                                 <i class="ph ph-plus me-1"></i><span>Add Participant</span>
                             </button>
                             <!-- Participant Search Dropdown -->
@@ -320,14 +319,14 @@
                                     </button>
                                 </div>
                                 <div class="participant-search-results">
-                                    @for(participant of filteredParticipants; track participant.id) {
+                                    @for(member of members; track member.id) {
                                     <div class="participant-search-item"
-                                         (click)="addParticipant(participant)">
-                                        <img [src]="participant.avatar" class="rounded-circle participant-search-avatar"
-                                             [alt]="participant.name">
+                                         (click)="addParticipant(member)">
+                                        <img [src]="member.thumbnail ?? '/assets/images/dummy-user.png'" class="rounded-circle participant-search-avatar"
+                                             [alt]="member.email">
                                         <div class="participant-info">
-                                            <div class="participant-name">{{ participant.name }}</div>
-                                            <div class="participant-email">{{ participant.email }}</div>
+                                            <div class="participant-name">{{ member.firstName }} {{ member.lastName }}</div>
+                                            <div class="participant-email">{{ member.email }}</div>
                                         </div>
                                     </div>
                                     }

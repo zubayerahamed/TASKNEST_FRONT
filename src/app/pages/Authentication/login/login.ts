@@ -4,6 +4,7 @@ import { Router, RouterLink } from '@angular/router';
 import { WorkspaceStateService } from '../../../core/services/workspace-state.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AuthHelper } from '../../../core/helpers/auth.helper';
+import { AlertService } from '../../../core/services/alert.service';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ export class Login {
   public loginErrorMessage: string = '';
 
   private workspaceStateService = inject(WorkspaceStateService);
+  private alertService = inject(AlertService);
 
   constructor(private authService: AuthService, private router: Router) {
     if (AuthHelper.isAuthenticated()) {
@@ -47,6 +49,7 @@ export class Login {
 
         // You can access backend error message like this
         const errorMessage = err?.error?.message || 'Something went wrong';
+        this.alertService.showAlert('error', "Login Failed", errorMessage);
 
         // Show it in UI (e.g., using a toast or an error field)
         this.loginErrorMessage = errorMessage;

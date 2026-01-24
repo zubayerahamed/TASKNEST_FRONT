@@ -36,6 +36,8 @@ import {
 import { EventModalStateService } from '../../../core/services/event-modal-state.service';
 import { AsyncPipe } from '@angular/common';
 import { Subject } from 'rxjs';
+import { MemberService } from '../../../core/services/member.service';
+import { Member } from '../../../core/models/member.model';
 // import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectConfig } from '@ng-select/ng-select';
 
 @Component({
@@ -59,6 +61,7 @@ export class CreateEvent implements OnInit, OnChanges {
     private documentService = inject(DocumentService);
     private repeaterStateService = inject(EventRepeaterModalStateService);
     private eventModalStateService = inject(EventModalStateService);
+    private memberService = inject(MemberService);
 
     // State observables
     isOpenModal$ = this.eventModalStateService.isModalOpen$;
@@ -69,6 +72,7 @@ export class CreateEvent implements OnInit, OnChanges {
     public projects: Project[] = [];
     public categories: Category[] = [];
     public checklistItems: ChecklistItem[] = [];
+    public members: Member[] = [];
 
     // Form properties
     enteredEventDate: string = new Date().toISOString().split('T')[0];
@@ -100,6 +104,23 @@ export class CreateEvent implements OnInit, OnChanges {
         this.destroyRef.onDestroy(() => {
             eventModalSubs.unsubscribe();
         });
+
+
+        // Load members
+        const memberSubscription = this.memberService.getAllWorkspaceMembers().subscribe({
+            next: (resData) => {
+                this.members = resData.data || [];
+            },
+            error: (error) => {
+                console.error('Error fetching members:', error);
+            },
+        });
+
+        this.destroyRef.onDestroy(() => {
+            memberSubscription.unsubscribe();
+        });
+
+
     }
 
     ngOnChanges(changes: SimpleChanges): void {
@@ -265,7 +286,7 @@ export class CreateEvent implements OnInit, OnChanges {
             location: this.enteredEventLocation,
             isReminderEnabled: this.selectedReminder != null,
             reminderBefore: this.selectedReminder || 0,
-            perticipants: [],
+            perticipants: this.selectedParticipants.map((p) => p.id),
             documents: this.attachedFiles.map((file) => file.id),
             checklists: this.checklistItems
                 ? this.checklistItems.map((item) => ({
@@ -357,14 +378,7 @@ export class CreateEvent implements OnInit, OnChanges {
     newChecklistItem = '';
     attachedFiles: AttachedFile[] = [];
 
-    selectedParticipants: Participant[] = [
-        {
-            id: 1,
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            avatar: '/assets/images/zubayer.jpg',
-        },
-    ];
+    selectedParticipants: Member[] = [];
 
     removeParticipant(participantId: number) {
         this.selectedParticipants = this.selectedParticipants.filter(
@@ -418,7 +432,7 @@ export class CreateEvent implements OnInit, OnChanges {
         );
     }
 
-    addParticipant(participant: Participant) {
+    addParticipant(participant: Member) {
         if (!this.selectedParticipants.find((p) => p.id === participant.id)) {
             this.selectedParticipants.push(participant);
         }
