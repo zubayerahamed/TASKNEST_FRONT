@@ -7,6 +7,7 @@ import { SidebarStateService } from '../../../core/services/sidebar-state.servic
 import { DocumentService } from '../../../core/services/document.service';
 import { Document } from '../../../core/models/attached-file.model';
 import { EditEvent } from '../../../pages/events/edit-event/edit-event';
+import { EventModalStateService } from '../../../core/services/event-modal-state.service';
 
 @Component({
   selector: 'app-event-preview',
@@ -22,6 +23,7 @@ export class EventPreview {
   private alertService = inject(AlertService);
   private sidebarStateService = inject(SidebarStateService);
   private documentService = inject(DocumentService);
+  private eventModalStateService = inject(EventModalStateService);
 
   deleteEvent(event: EventDto){
     this.eventService.deleteEvent(event.id).subscribe({
@@ -269,8 +271,9 @@ export class EventPreview {
   public openEditEventModal = false;
   public selectedEvent: EventDto | null = null;
   editEvent(event: EventDto){
-    this.openEditEventModal = true;
-    this.selectedEvent = event;
+    // this.openEditEventModal = true;
+    // this.selectedEvent = event;
+    this.eventModalStateService.openModal(event);
   }
 
   onCloseEventModal(){

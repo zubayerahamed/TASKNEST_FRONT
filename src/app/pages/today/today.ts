@@ -40,14 +40,19 @@ export class Today implements OnInit {
   }
 
   loadEvents(){
-    this.pageService.getAllTodaysEvents().subscribe({
+    const todayEventsSubscription = this.pageService.getAllTodaysEvents().subscribe({
       next: (response) => {
+        console.log('Today\'s events fetched successfully:', response);
         this.events = response.data || [];
         this.groupedEvents = this.groupEventsByProjectName(this.events);
       },
       error: (error) => {
         console.error('Error fetching today\'s events:', error);
       },
+    });
+
+    this.destroyRef.onDestroy(() => {
+      todayEventsSubscription.unsubscribe();
     });
   }
 

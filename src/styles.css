@@ -929,6 +929,7 @@ MODAL STYLES
 
 .participant-search-container {
   position: relative;
+  z-index: 999;
 }
 
 .participant-search-dropdown {

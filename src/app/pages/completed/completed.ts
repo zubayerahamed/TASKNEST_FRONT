@@ -41,6 +41,8 @@ export class Completed implements OnInit {
   loadEvents(){
     this.pageService.getAllCompletedEvents().subscribe({
       next: (response) => {
+        console.log('Completed\'s events fetched successfully:', response);
+
         this.events = response.data || [];
         this.groupedEvents = this.groupEventsByProjectName(this.events);
       },

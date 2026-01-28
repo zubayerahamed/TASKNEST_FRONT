@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { EventDto } from '../models/event.model';
 
 @Injectable({
-  providedIn: 'root',
+    providedIn: 'root',
 })
 export class EventModalStateService {
-  private isModalOpen = new BehaviorSubject<boolean>(false);
-  isModalOpen$ = this.isModalOpen.asObservable();
+    private isModalOpen = new BehaviorSubject<boolean>(false);
+    private selectedEvent = new BehaviorSubject<EventDto | null>(null);
+    isModalOpen$ = this.isModalOpen.asObservable();
+    selectedEvent$ = this.selectedEvent.asObservable();
 
-  openModal() {
-    this.isModalOpen.next(true);
-  }
+    openModal(event: EventDto | null = null) {
+        this.isModalOpen.next(true);
+        this.selectedEvent.next(event);
+    }
 
-  closeModal() {
-    this.isModalOpen.next(false);
-  }
-
-  toggleModal() {
-    this.isModalOpen.next(!this.isModalOpen.value);
-  }
+    closeModal() {
+        this.isModalOpen.next(false);
+        this.selectedEvent.next(null);
+    }
 }

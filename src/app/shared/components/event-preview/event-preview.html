@@ -9,7 +9,12 @@
                 <div class="d-flex align-items-center gap-3 task-header">
                     <span class="badge bg-primary ps-3 pe-3">Event</span>
                     <h5 class="m-0">{{ event.title }}</h5>
-                    <img src="/assets/images/zubayer.jpg" class="rounded-circle task-participants-image" alt="Cinque Terre" />
+                    <span class="d-flex align-items-center gap-1">
+                        @for(participant of event.participants; track participant.userId) {
+                            <img src="/assets/images/zubayer.jpg" class="rounded-circle task-participants-image" alt="{{ participant.participantUser.firstName + ' ' + participant.participantUser.lastName }}" />
+                        }
+                    </span>
+                    <!-- <img src="/assets/images/zubayer.jpg" class="rounded-circle task-participants-image" alt="Cinque Terre" /> -->
                 </div>
                 
                 @if(event.description){
@@ -117,7 +122,9 @@
                 <div class="d-flex align-items-center gap-3 task-header">
                     <span class="badge bg-primary ps-3 pe-3">Event</span>
                     <h5 class="m-0">{{ event.title }}</h5>
-                    <img src="/assets/images/zubayer.jpg" class="rounded-circle task-participants-image" alt="Cinque Terre" />
+                    @for(participant of event.participants; track participant.userId) {
+                        <img src="/assets/images/zubayer.jpg" class="rounded-circle task-participants-image" alt="{{ participant.participantUser.firstName + ' ' + participant.participantUser.lastName }}" />
+                    }
                 </div>
                 
                 @if(event.description){
@@ -205,9 +212,6 @@
                     }
                     </div>
                 }
-            </div>
-            <div (click)="editEvent(event)">
-                <i class="btn-edit-event ph ph-pencil-simple-line text-primary"></i>
             </div>
             <div (click)="deleteEvent(event)">
                 <i class="btn-delete-event ph ph-trash text-danger"></i>

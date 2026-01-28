@@ -1,44 +1,39 @@
 import {
     Component,
     DestroyRef,
-    EventEmitter,
     inject,
-    Input,
     OnChanges,
     OnInit,
-    Output,
-    SimpleChanges,
+    SimpleChanges
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { AsyncPipe } from '@angular/common';
 import {
     FlatpickrDirective,
     provideFlatpickrDefaults,
 } from 'angularx-flatpickr';
-import { AlertService } from '../../../core/services/alert.service';
-import { ProjectService } from '../../../core/services/project.service';
-import { CategoryService } from '../../../core/services/category.service';
-import { EventService } from '../../../core/services/event.service';
-import { SidebarStateService } from '../../../core/services/sidebar-state.service';
-import { ProjectPageStateService } from '../../../core/services/porjectpage-state.service';
-import { TodayPageStateService } from '../../../core/services/todaypage-state.service';
-import { DocumentService } from '../../../core/services/document.service';
-import { EventRepeaterModalStateService } from '../../../core/services/event-repeater-modal-state.service';
-import { Project } from '../../../core/models/project.model';
-import { Category } from '../../../core/models/category.model';
-import { ChecklistItem } from '../../../core/models/checklist-item.model';
-import { AddEvent, EventDto } from '../../../core/models/event.model';
-import { Participant } from '../../../core/models/participant.model';
 import {
     AttachedFile,
     Document,
 } from '../../../core/models/attached-file.model';
-import { EventModalStateService } from '../../../core/services/event-modal-state.service';
-import { AsyncPipe } from '@angular/common';
-import { Subject } from 'rxjs';
-import { MemberService } from '../../../core/services/member.service';
+import { Category } from '../../../core/models/category.model';
+import { ChecklistItem } from '../../../core/models/checklist-item.model';
+import { AddEvent, EventDto } from '../../../core/models/event.model';
 import { Member } from '../../../core/models/member.model';
-// import { NgLabelTemplateDirective, NgOptionTemplateDirective, NgSelectComponent, NgSelectConfig } from '@ng-select/ng-select';
+import { Project } from '../../../core/models/project.model';
+import { AlertService } from '../../../core/services/alert.service';
+import { CategoryService } from '../../../core/services/category.service';
+import { DocumentService } from '../../../core/services/document.service';
+import { EventModalStateService } from '../../../core/services/event-modal-state.service';
+import { EventRepeaterModalStateService } from '../../../core/services/event-repeater-modal-state.service';
+import { EventService } from '../../../core/services/event.service';
+import { MemberService } from '../../../core/services/member.service';
+import { ProjectPageStateService } from '../../../core/services/porjectpage-state.service';
+import { ProjectService } from '../../../core/services/project.service';
+import { SidebarStateService } from '../../../core/services/sidebar-state.service';
+import { TodayPageStateService } from '../../../core/services/todaypage-state.service';
+import { PerticipantType } from '../../../core/enums/perticipant-type.enum';
 
 @Component({
     selector: 'app-create-event',
@@ -67,12 +62,12 @@ export class CreateEvent implements OnInit, OnChanges {
     isOpenModal$ = this.eventModalStateService.isModalOpen$;
     eventRepeaterObject$ = this.repeaterStateService.eventRepeaterObject$;
     repeaterDetails$ = this.repeaterStateService.repeaterDetails$;
+    selectedEvent$ = this.eventModalStateService.selectedEvent$;
 
     // Data properties
     public projects: Project[] = [];
     public categories: Category[] = [];
     public checklistItems: ChecklistItem[] = [];
-    public members: Member[] = [];
 
     // Form properties
     enteredEventDate: string = new Date().toISOString().split('T')[0];
@@ -94,13 +89,67 @@ export class CreateEvent implements OnInit, OnChanges {
     eventProjectError: string = '';
 
     ngOnInit() {
+        // Subscribe to modal open state
         const eventModalSubs = this.eventModalStateService.isModalOpen$.subscribe({
             next: (data) => {
                 this.initializeDateTime();
                 this.loadProjects();
             },
         });
+        this.destroyRef.onDestroy(() => {
+            eventModalSubs.unsubscribe();
+        });
 
+        // Selected Event
+        this.eventModalStateService.selectedEvent$.subscribe({
+            next: (event) => {
+                if (event) {
+                    // Populate form fields with event data
+                    this.enteredEventDate = new Date(event.eventDate).toISOString().split('T')[0];
+                    this.enteredEventStartTime = event.startTime;
+                    this.enteredEventEndTime = event.endTime;
+                    this.enteredEventTitle = event.title;
+                    this.enteredEventDescription = event.description;
+                    this.selectedProjectId = event.projectId;
+                    this.loadCategoriesAndSelect(event.categoryId);
+                    this.enteredEventLink = event.eventLink;
+                    this.enteredEventLocation = event.location;
+                    this.selectedReminder = event.reminderBefore;
+                    this.checklistItems = event.checklists.map(c => ({
+                        id: c.id,
+                        text: c.description,
+                        completed: c.isCompleted
+                    }));
+                    this.selectedParticipants = [];
+                    event.participants.forEach((p) => {
+                        if (p.perticipantType !== PerticipantType.CREATOR) {
+                            const member: Member = {
+                                id: p.userId,
+                                email: p.participantUser.email,
+                                firstName: p.participantUser.firstName,
+                                lastName: p.participantUser.lastName,
+                                isActive: true,
+                                country: '',
+                                phone: '',
+                                location: '',
+                                dateOfBirth: '',
+                                thumbnail: null,
+                                userWorkspace: null,
+                            };
+                            this.selectedParticipants.push(member);
+                        }
+                    });
+                    this.attachedFiles = event.documents.map(d => ({
+                        id: d.id,
+                        name: d.title,
+                        type: d.docType,
+                        size: d.docSize,
+                        icon: this.getFileIcon(d.docName, d.docType),
+                    }));
+
+                }
+            },
+        });
         this.destroyRef.onDestroy(() => {
             eventModalSubs.unsubscribe();
         });
@@ -109,17 +158,15 @@ export class CreateEvent implements OnInit, OnChanges {
         // Load members
         const memberSubscription = this.memberService.getAllWorkspaceMembers().subscribe({
             next: (resData) => {
-                this.members = resData.data || [];
+                this.allParticipants = resData.data || [];
             },
             error: (error) => {
                 console.error('Error fetching members:', error);
             },
         });
-
         this.destroyRef.onDestroy(() => {
             memberSubscription.unsubscribe();
         });
-
 
     }
 
@@ -322,56 +369,7 @@ export class CreateEvent implements OnInit, OnChanges {
         });
     }
 
-    allParticipants: Participant[] = [
-        {
-            id: 1,
-            name: 'John Doe',
-            email: 'john.doe@example.com',
-            avatar: '/assets/images/zubayer.jpg',
-        },
-        {
-            id: 2,
-            name: 'Jane Smith',
-            email: 'jane.smith@example.com',
-            avatar: '/assets/images/zubayer.jpg',
-        },
-        {
-            id: 3,
-            name: 'Mike Johnson',
-            email: 'mike.johnson@example.com',
-            avatar: '/assets/images/zubayer.jpg',
-        },
-        {
-            id: 4,
-            name: 'Sarah Wilson',
-            email: 'sarah.wilson@example.com',
-            avatar: '/assets/images/zubayer.jpg',
-        },
-        {
-            id: 5,
-            name: 'David Brown',
-            email: 'david.brown@example.com',
-            avatar: '/assets/images/zubayer.jpg',
-        },
-        {
-            id: 6,
-            name: 'Emily Davis',
-            email: 'emily.davis@example.com',
-            avatar: '/assets/images/zubayer.jpg',
-        },
-        {
-            id: 7,
-            name: 'Alex Miller',
-            email: 'alex.miller@example.com',
-            avatar: '/assets/images/zubayer.jpg',
-        },
-        {
-            id: 8,
-            name: 'Lisa Anderson',
-            email: 'lisa.anderson@example.com',
-            avatar: '/assets/images/zubayer.jpg',
-        },
-    ];
+    allParticipants: Member[] = [];
 
     isParticipantSearchOpen = false;
     participantSearchQuery = '';
@@ -386,11 +384,30 @@ export class CreateEvent implements OnInit, OnChanges {
         );
     }
 
+    loadCategoriesAndSelect(selectedCategory: number) {
+        if (this.selectedProjectId == null) return;
+
+        // Fetch the categories for the selected project. 
+        const catSub = this.categoryService.getAllProjectCategories(this.selectedProjectId).subscribe({
+            next: (resData) => {
+                this.categories = resData.data || [];
+                this.categories = this.categories.filter(cat => cat.isForEvent);
+                this.selectedCategoryId = selectedCategory;
+            },
+            error: (error) => {
+                console.error('Error fetching categories:', error);
+            }
+        });
+
+        this.destroyRef.onDestroy(() => {
+            catSub.unsubscribe();
+        });
+    }
+
     closeAddEventModal() {
         this.resetForm();
         this.isParticipantSearchOpen = false;
         this.participantSearchQuery = '';
-        //this.isAddEventModalClose.emit();
         this.eventModalStateService.closeModal();
         this.repeaterStateService.setEventRepeaterObject(null);
     }
@@ -416,7 +433,7 @@ export class CreateEvent implements OnInit, OnChanges {
         this.participantSearchQuery = '';
     }
 
-    get filteredParticipants(): Participant[] {
+    get filteredParticipants(): Member[] {
         if (!this.participantSearchQuery.trim()) {
             return this.allParticipants.filter(
                 (p) => !this.selectedParticipants.find((sp) => sp.id === p.id)
@@ -427,7 +444,7 @@ export class CreateEvent implements OnInit, OnChanges {
         return this.allParticipants.filter(
             (participant) =>
                 !this.selectedParticipants.find((sp) => sp.id === participant.id) &&
-                (participant.name.toLowerCase().includes(query) ||
+                (participant.firstName.toLowerCase().includes(query) ||
                     participant.email.toLowerCase().includes(query))
         );
     }
