@@ -14,6 +14,7 @@ import { WorkspaceSettings } from './pages/workspaces/workspace-settings/workspa
 import { ProjectSettings } from './pages/project/project-settings/project-settings';
 import { Members } from './pages/members/members';
 import { AcceptInvitation } from './pages/members/accept-invitation/accept-invitation';
+import { ProfileSettings } from './pages/profile-settings/profile-settings';
 
 
 export const routes: Routes = [
@@ -34,6 +35,10 @@ export const routes: Routes = [
       {
         path: 'members',
         component: Members
+      },
+      {
+        path: 'profile-settings',
+        component: ProfileSettings
       },
       {
         path: 'accept-invitation/:token',

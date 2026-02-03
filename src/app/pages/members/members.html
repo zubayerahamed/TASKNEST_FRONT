@@ -42,20 +42,20 @@
     @for (member of members; track member.id) {
     <div class="col-md-4">
         <div class="border rounded d-flex justify-content-start align-items-center p-2 gap-2 mb-2">
-            <span>
+            <div>
                 <p class="m-0 mb-1">{{ member.firstName }} {{ member.lastName }}</p>
-                <span class="badge bg-primary rounded-pill">
+                <div class="d-block text-sm text-muted">
                     {{ member.email }}
-                </span>
-                <span class="badge bg-secondary rounded-pill ms-1">
+                </div>
+                <div class="d-block text-sm text-success mt-1">
                     {{ member.userWorkspace?.isAdmin ? 'Admin' : 'Collaborator' }}
-                </span>
-            </span>
+                </div>
+            </div>
 
             <!-- Resend invitation button can be added here -->
-            <span class="d-flex justify-content-end flex-grow-1 gap-2">
+            <div class="d-flex justify-content-end flex-grow-1 gap-2">
                 <button type="button" class="btn btn-sm btn-outline-danger">Remove</button>
-            </span>
+            </div>
         </div>
     </div>
     }

@@ -1,17 +1,17 @@
 import {
-  Component,
-  DestroyRef,
-  HostListener,
-  inject,
-  OnInit,
+    Component,
+    DestroyRef,
+    HostListener,
+    inject,
+    OnInit,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LeftSidebar } from './left-sidebar/left-sidebar';
 import {
-  ActivatedRoute,
-  NavigationStart,
-  Router,
-  RouterOutlet,
+    ActivatedRoute,
+    NavigationStart,
+    Router,
+    RouterOutlet,
 } from '@angular/router';
 import { Header } from './header/header';
 import { AuthService } from '../core/services/auth.service';
@@ -28,374 +28,374 @@ import { CreateWorkspace } from '../pages/workspaces/create-workspace/create-wor
 import { CreateProject } from '../pages/project/create-project/create-project';
 
 @Component({
-  selector: 'app-layouts',
-  standalone: true,
-  templateUrl: './layouts.html',
-  styleUrls: ['./layouts.css'],
-  imports: [
-    RouterOutlet,
-    FormsModule,
-    LeftSidebar,
-    Header,
-    CreateEvent,
-    CreateTask,
-    CreateWorkspace,
-    CreateProject,
-    CreateEventRepeater,
-  ],
+    selector: 'app-layouts',
+    standalone: true,
+    templateUrl: './layouts.html',
+    styleUrls: ['./layouts.css'],
+    imports: [
+        RouterOutlet,
+        FormsModule,
+        LeftSidebar,
+        Header,
+        CreateEvent,
+        CreateTask,
+        CreateWorkspace,
+        CreateProject,
+        CreateEventRepeater,
+    ],
 })
 export class Layouts implements OnInit {
-  appTitle: string = 'TASKNEST';
-  isSidebarOpen = false;
+    appTitle: string = 'TASKNEST';
+    isSidebarOpen = false;
 
-  private authService = inject(AuthService);
-  private workspaceService = inject(WorkspaceService);
-  private router = inject(Router);
-  private activatedRoute = inject(ActivatedRoute);
-  private destroyRef = inject(DestroyRef);
+    private authService = inject(AuthService);
+    private workspaceService = inject(WorkspaceService);
+    private router = inject(Router);
+    private activatedRoute = inject(ActivatedRoute);
+    private destroyRef = inject(DestroyRef);
 
-  constructor() {
-    this.initializeDefaultRoute();
-  }
-
-  ngOnInit(): void {
-    // Initialize Route
-    this.initializeRoute();
-
-    // Load workspaces here
-    this.loadCurrentWorkspace();
-    this.loadAvailableWorkspaces();
-  }
-
-  // choose default route at the very beginning
-  initializeDefaultRoute() {
-    console.log('%cInitialized Default Route', 'color: green');
-    if (this.router.url == '/') {
-      this.router.navigate(['/today']);
+    constructor() {
+        this.initializeDefaultRoute();
     }
-  }
 
-  // Initialize Route
-  initializeRoute() {
-    console.log(
-      '%cRest sidebar state when navigating to a new route',
-      'color: green'
-    );
-    const routerSubs = this.router.events.subscribe({
-      next: (event) => {
-        if (event instanceof NavigationStart) {
-          // Reset sidebar state when navigating to a new route
-          const url = event.url;
-          if (url === '/') {
+    ngOnInit(): void {
+        // Initialize Route
+        this.initializeRoute();
+
+        // Load workspaces here
+        this.loadCurrentWorkspace();
+        this.loadAvailableWorkspaces();
+    }
+
+    // choose default route at the very beginning
+    initializeDefaultRoute() {
+        console.log('%cInitialized Default Route', 'color: green');
+        if (this.router.url == '/') {
             this.router.navigate(['/today']);
-          }
         }
-      },
-    });
+    }
 
-    this.destroyRef.onDestroy(() => {
-      routerSubs.unsubscribe();
-    });
-  }
+    // Initialize Route
+    initializeRoute() {
+        console.log(
+            '%cRest sidebar state when navigating to a new route',
+            'color: green'
+        );
+        const routerSubs = this.router.events.subscribe({
+            next: (event) => {
+                if (event instanceof NavigationStart) {
+                    // Reset sidebar state when navigating to a new route
+                    const url = event.url;
+                    if (url === '/') {
+                        this.router.navigate(['/today']);
+                    }
+                }
+            },
+        });
 
-  /**
-   * ===== Workspace =====
-   */
-  // Workspace properties
-  isCreateWorkspaceModalOpen: boolean = false;
-  isWorkspaceDropdownOpen: boolean = false;
-  availableWorkspaces: Workspace[] = [];
-  newWorkspaceName: string = '';
-  currentWorkspace!: Workspace;
+        this.destroyRef.onDestroy(() => {
+            routerSubs.unsubscribe();
+        });
+    }
 
-  // Load Current Workspace
-  loadCurrentWorkspace() {
-    console.log('%cLoading current workspaces', 'color: green');
-    const workspaceId = AuthHelper.getJwtPayloads()?.workspaceId;
-    if (workspaceId == null) return;
+    /**
+     * ===== Workspace =====
+     */
+    // Workspace properties
+    isCreateWorkspaceModalOpen: boolean = false;
+    isWorkspaceDropdownOpen: boolean = false;
+    availableWorkspaces: Workspace[] = [];
+    newWorkspaceName: string = '';
+    currentWorkspace!: Workspace;
 
-    this.workspaceService.findWorkspace(workspaceId).subscribe({
-      next: (resData) => {
-        this.currentWorkspace = resData.data;
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
-  }
+    // Load Current Workspace
+    loadCurrentWorkspace() {
+        console.log('%cLoading current workspaces', 'color: green');
+        const workspaceId = AuthHelper.getJwtPayloads()?.workspaceId;
+        if (workspaceId == null) return;
 
-  // Load available other workspaces here
-  loadAvailableWorkspaces() {
-    console.log('%cLoading all available other workspaces', 'color: green');
-    this.workspaceService.getAllOtherWorkspaces().subscribe({
-      next: (resData) => {
-        this.availableWorkspaces = resData.data;
-      },
-      error: (error) => {
-        console.log(error);
-      },
-    });
-  }
+        this.workspaceService.findWorkspace(workspaceId).subscribe({
+            next: (resData) => {
+                this.currentWorkspace = resData.data;
+            },
+            error: (error) => {
+                console.log(error);
+            },
+        });
+    }
 
-  // Open create workspace modal
-  openCreateWorkspaceModal() {
-    this.isCreateWorkspaceModalOpen = true;
-    this.newWorkspaceName = '';
-  }
+    // Load available other workspaces here
+    loadAvailableWorkspaces() {
+        console.log('%cLoading all available other workspaces', 'color: green');
+        this.workspaceService.getAllOtherWorkspaces().subscribe({
+            next: (resData) => {
+                this.availableWorkspaces = resData.data;
+            },
+            error: (error) => {
+                console.log(error);
+            },
+        });
+    }
 
-  closeCreateWorkspaceModal() {
-    this.isCreateWorkspaceModalOpen = false;
-    this.newWorkspaceName = '';
-  }
+    // Open create workspace modal
+    openCreateWorkspaceModal() {
+        this.isCreateWorkspaceModalOpen = true;
+        this.newWorkspaceName = '';
+    }
 
-  // User profile dropdown properties
-  isUserProfileDropdownOpen = false;
-  currentUser = {
-    name: 'Zubayer Ahamed',
-    email: 'zubayer@example.com',
-    avatar: '/assets/images/zubayer.jpg',
-  };
+    closeCreateWorkspaceModal() {
+        this.isCreateWorkspaceModalOpen = false;
+        this.newWorkspaceName = '';
+    }
 
-  // Dummy participants data
-  allParticipants: Participant[] = [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'john.doe@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      email: 'jane.smith@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 3,
-      name: 'Mike Johnson',
-      email: 'mike.johnson@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 4,
-      name: 'Sarah Wilson',
-      email: 'sarah.wilson@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 5,
-      name: 'David Brown',
-      email: 'david.brown@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 6,
-      name: 'Emily Davis',
-      email: 'emily.davis@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 7,
-      name: 'Alex Miller',
-      email: 'alex.miller@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-    {
-      id: 8,
-      name: 'Lisa Anderson',
-      email: 'lisa.anderson@example.com',
-      avatar: '/assets/images/zubayer.jpg',
-    },
-  ];
+    // User profile dropdown properties
+    isUserProfileDropdownOpen = false;
+    currentUser = {
+        name: 'Zubayer Ahamed',
+        email: 'zubayer@example.com',
+        avatar: '/assets/images/zubayer.jpg',
+    };
 
-  draggedSubtaskIndex: number | null = null;
+    // Dummy participants data
+    allParticipants: Participant[] = [
+        {
+            id: 1,
+            name: 'John Doe',
+            email: 'john.doe@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 2,
+            name: 'Jane Smith',
+            email: 'jane.smith@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 3,
+            name: 'Mike Johnson',
+            email: 'mike.johnson@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 4,
+            name: 'Sarah Wilson',
+            email: 'sarah.wilson@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 5,
+            name: 'David Brown',
+            email: 'david.brown@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 6,
+            name: 'Emily Davis',
+            email: 'emily.davis@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 7,
+            name: 'Alex Miller',
+            email: 'alex.miller@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+        {
+            id: 8,
+            name: 'Lisa Anderson',
+            email: 'lisa.anderson@example.com',
+            avatar: '/assets/images/zubayer.jpg',
+        },
+    ];
 
-  availableTags: Tag[] = [
-    { id: 1, name: 'DSA', workspaceId: 1, color: '#28a745' },
-    { id: 2, name: 'Spring Security', workspaceId: 1, color: '#17a2b8' },
-    { id: 3, name: 'Spring Cloud', workspaceId: 1, color: '#6f42c1' },
-    { id: 4, name: 'AWS', workspaceId: 1, color: '#fd7e14' },
-  ];
+    draggedSubtaskIndex: number | null = null;
 
-  selectedTags: Tag[] = [
-    { id: 1, name: 'DSA', workspaceId: 1, color: '#28a745' },
-    { id: 2, name: 'Spring Security', workspaceId: 1, color: '#17a2b8' },
-    { id: 3, name: 'Spring Cloud', workspaceId: 1, color: '#6f42c1' },
-    { id: 4, name: 'AWS', workspaceId: 1, color: '#fd7e14' },
-  ];
+    availableTags: Tag[] = [
+        { id: 1, name: 'DSA', workspaceId: 1, color: '#28a745' },
+        { id: 2, name: 'Spring Security', workspaceId: 1, color: '#17a2b8' },
+        { id: 3, name: 'Spring Cloud', workspaceId: 1, color: '#6f42c1' },
+        { id: 4, name: 'AWS', workspaceId: 1, color: '#fd7e14' },
+    ];
 
-  toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
-  }
+    selectedTags: Tag[] = [
+        { id: 1, name: 'DSA', workspaceId: 1, color: '#28a745' },
+        { id: 2, name: 'Spring Security', workspaceId: 1, color: '#17a2b8' },
+        { id: 3, name: 'Spring Cloud', workspaceId: 1, color: '#6f42c1' },
+        { id: 4, name: 'AWS', workspaceId: 1, color: '#fd7e14' },
+    ];
 
-  closeSidebar() {
-    this.isSidebarOpen = false;
-  }
+    toggleSidebar() {
+        this.isSidebarOpen = !this.isSidebarOpen;
+    }
 
-  // Task Modal Methods
-  isAddTaskModalOpen = false;
-  openAddTaskModal() {
-    this.isAddTaskModalOpen = true;
-  }
-  onCloseAddTaskModal() {
-    this.isAddTaskModalOpen = false;
-  }
+    closeSidebar() {
+        this.isSidebarOpen = false;
+    }
 
-  // Project Modal Methods
-  isAddProjectModalOpen = false;
-  triggeRrefreshProjectsOfSidebar = 0;
-  openAddProjectModal() {
-    this.isAddProjectModalOpen = true;
-  }
-  onCloseAddProjectModal() {
-    this.isAddProjectModalOpen = false;
-  }
-  onTriggeRrefreshProjectsOfSidebar() {
-    this.triggeRrefreshProjectsOfSidebar++;
-  }
+    // Task Modal Methods
+    isAddTaskModalOpen = false;
+    openAddTaskModal() {
+        this.isAddTaskModalOpen = true;
+    }
+    onCloseAddTaskModal() {
+        this.isAddTaskModalOpen = false;
+    }
 
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event) {
-    const target = event.target as HTMLElement;
+    // Project Modal Methods
+    isAddProjectModalOpen = false;
+    triggeRrefreshProjectsOfSidebar = 0;
+    openAddProjectModal() {
+        this.isAddProjectModalOpen = true;
+    }
+    onCloseAddProjectModal() {
+        this.isAddProjectModalOpen = false;
+    }
+    onTriggeRrefreshProjectsOfSidebar() {
+        this.triggeRrefreshProjectsOfSidebar++;
+    }
 
-    // Check if workspace dropdown is open and close it if clicking outside
-    if (this.isWorkspaceDropdownOpen) {
-      const isClickInsideWorkspaceDropdown = target.closest(
-        '.workspace-dropdown'
-      );
-      const isClickOnWorkspaceLink = target.closest('.workspace-dropdown-link');
+    @HostListener('document:click', ['$event'])
+    onDocumentClick(event: Event) {
+        const target = event.target as HTMLElement;
 
-      if (!isClickInsideWorkspaceDropdown && !isClickOnWorkspaceLink) {
+        // Check if workspace dropdown is open and close it if clicking outside
+        if (this.isWorkspaceDropdownOpen) {
+            const isClickInsideWorkspaceDropdown = target.closest(
+                '.workspace-dropdown'
+            );
+            const isClickOnWorkspaceLink = target.closest('.workspace-dropdown-link');
+
+            if (!isClickInsideWorkspaceDropdown && !isClickOnWorkspaceLink) {
+                this.closeWorkspaceDropdown();
+            }
+        }
+
+        // Check if user profile dropdown is open and close it if clicking outside
+        if (this.isUserProfileDropdownOpen) {
+            const isClickInsideUserProfileDropdown = target.closest(
+                '.user-profile-dropdown'
+            );
+            const isClickOnUserProfileImage = target.closest('.user-profile-image');
+
+            if (!isClickInsideUserProfileDropdown && !isClickOnUserProfileImage) {
+                this.closeUserProfileDropdown();
+            }
+        }
+    }
+
+    // Workspace dropdown methods
+    toggleWorkspaceDropdown() {
+        this.isWorkspaceDropdownOpen = !this.isWorkspaceDropdownOpen;
+    }
+
+    closeWorkspaceDropdown() {
+        this.isWorkspaceDropdownOpen = false;
+    }
+
+    switchWorkspace(workspace: Workspace) {
+        this.currentWorkspace = workspace;
         this.closeWorkspaceDropdown();
-      }
     }
 
-    // Check if user profile dropdown is open and close it if clicking outside
-    if (this.isUserProfileDropdownOpen) {
-      const isClickInsideUserProfileDropdown = target.closest(
-        '.user-profile-dropdown'
-      );
-      const isClickOnUserProfileImage = target.closest('.user-profile-image');
+    onWorkspaceDropdownBackdropClick(event: Event) {
+        if (event.target === event.currentTarget) {
+            this.closeWorkspaceDropdown();
+        }
+    }
 
-      if (!isClickInsideUserProfileDropdown && !isClickOnUserProfileImage) {
+    // User profile dropdown methods
+    toggleUserProfileDropdown() {
+        this.isUserProfileDropdownOpen = !this.isUserProfileDropdownOpen;
+    }
+
+    closeUserProfileDropdown() {
+        this.isUserProfileDropdownOpen = false;
+    }
+
+    onUserProfileDropdownBackdropClick(event: Event) {
+        if (event.target === event.currentTarget) {
+            this.closeUserProfileDropdown();
+        }
+    }
+
+    openProfileSettings() {
         this.closeUserProfileDropdown();
-      }
+        // Add profile settings logic here
+        console.log('Opening profile settings...');
     }
-  }
 
-  // Workspace dropdown methods
-  toggleWorkspaceDropdown() {
-    this.isWorkspaceDropdownOpen = !this.isWorkspaceDropdownOpen;
-  }
+    logout() {
+        this.closeUserProfileDropdown();
+        console.log('Logging out...');
+        if (!AuthHelper.isAuthenticated()) return;
 
-  closeWorkspaceDropdown() {
-    this.isWorkspaceDropdownOpen = false;
-  }
-
-  switchWorkspace(workspace: Workspace) {
-    this.currentWorkspace = workspace;
-    this.closeWorkspaceDropdown();
-  }
-
-  onWorkspaceDropdownBackdropClick(event: Event) {
-    if (event.target === event.currentTarget) {
-      this.closeWorkspaceDropdown();
+        this.authService.logout().subscribe({
+            next: () => {
+                AuthHelper.clearAuthData(); // Clear auth data from session storage
+                this.router.navigate(['/login']);
+            },
+            error: (err) => {
+                console.error('Logout failed:', err);
+                // Still clear storage just in case
+                AuthHelper.clearAuthData();
+                this.router.navigate(['/login']);
+            },
+        });
     }
-  }
 
-  // User profile dropdown methods
-  toggleUserProfileDropdown() {
-    this.isUserProfileDropdownOpen = !this.isUserProfileDropdownOpen;
-  }
-
-  closeUserProfileDropdown() {
-    this.isUserProfileDropdownOpen = false;
-  }
-
-  onUserProfileDropdownBackdropClick(event: Event) {
-    if (event.target === event.currentTarget) {
-      this.closeUserProfileDropdown();
+    // Left sidebar event handlers
+    onSidebarToggle() {
+        this.toggleSidebar();
     }
-  }
 
-  openProfileSettings() {
-    this.closeUserProfileDropdown();
-    // Add profile settings logic here
-    console.log('Opening profile settings...');
-  }
+    onSidebarClose() {
+        this.closeSidebar();
+    }
 
-  logout() {
-    this.closeUserProfileDropdown();
-    console.log('Logging out...');
-    if (!AuthHelper.isAuthenticated()) return;
+    onWorkspaceDropdownToggle() {
+        this.toggleWorkspaceDropdown();
+    }
 
-    this.authService.logout().subscribe({
-      next: () => {
-        AuthHelper.clearAuthData(); // Clear auth data from session storage
-        this.router.navigate(['/login']);
-      },
-      error: (err) => {
-        console.error('Logout failed:', err);
-        // Still clear storage just in case
-        AuthHelper.clearAuthData();
-        this.router.navigate(['/login']);
-      },
-    });
-  }
+    onWorkspaceDropdownClose() {
+        this.closeWorkspaceDropdown();
+    }
 
-  // Left sidebar event handlers
-  onSidebarToggle() {
-    this.toggleSidebar();
-  }
+    onWorkspaceSwitch(workspace: Workspace) {
+        this.switchWorkspace(workspace);
+    }
 
-  onSidebarClose() {
-    this.closeSidebar();
-  }
+    onCreateWorkspaceModalOpen() {
+        this.openCreateWorkspaceModal();
+    }
 
-  onWorkspaceDropdownToggle() {
-    this.toggleWorkspaceDropdown();
-  }
+    onCreateWorkspaceModalClose() {
+        this.isCreateWorkspaceModalOpen = false;
+        this.newWorkspaceName = '';
+    }
 
-  onWorkspaceDropdownClose() {
-    this.closeWorkspaceDropdown();
-  }
+    onWorkspaceCreate(workspaceName: string) {
+        this.newWorkspaceName = workspaceName;
+        //this.createWorkspace();
+    }
 
-  onWorkspaceSwitch(workspace: Workspace) {
-    this.switchWorkspace(workspace);
-  }
+    onWorkspaceNameChange(name: string) {
+        this.newWorkspaceName = name;
+    }
 
-  onCreateWorkspaceModalOpen() {
-    this.openCreateWorkspaceModal();
-  }
-
-  onCreateWorkspaceModalClose() {
-    this.isCreateWorkspaceModalOpen = false;
-    this.newWorkspaceName = '';
-  }
-
-  onWorkspaceCreate(workspaceName: string) {
-    this.newWorkspaceName = workspaceName;
-    //this.createWorkspace();
-  }
-
-  onWorkspaceNameChange(name: string) {
-    this.newWorkspaceName = name;
-  }
-
-  // Handlers for header component events
-  onToggleSidebar() {
-    this.toggleSidebar();
-  }
-  onToggleUserProfileDropdown() {
-    this.toggleUserProfileDropdown();
-  }
-  onCloseUserProfileDropdown() {
-    this.closeUserProfileDropdown();
-  }
-  onOpenProfileSettings() {
-    this.openProfileSettings();
-  }
-  onLogout() {
-    this.logout();
-  }
+    // Handlers for header component events
+    onToggleSidebar() {
+        this.toggleSidebar();
+    }
+    onToggleUserProfileDropdown() {
+        this.toggleUserProfileDropdown();
+    }
+    onCloseUserProfileDropdown() {
+        this.closeUserProfileDropdown();
+    }
+    onOpenProfileSettings() {
+        this.openProfileSettings();
+    }
+    onLogout() {
+        this.logout();
+    }
 }

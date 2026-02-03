@@ -1,60 +1,60 @@
 <div class="header-area d-flex align-items-center justify-content-between">
-  <!-- Mobile Menu Button -->
-  <button class="mobile-menu-btn d-md-none btn p-0 me-3" (click)="onToggleSidebar()">
-    <i class="ph ph-list fs-2"></i>
-  </button>
-  <h3 class="p-0 m-0 fw-bold flex-grow-1">
-    <a routerLink="/" class="page-link">{{ appTitle }}</a>
-  </h3>
-  <div class="d-flex align-items-center gap-3">
-    <div class="d-flex align-items-center gap-2 p-1 ps-4 pe-4 bg-dark text-white rounded timer-display">
-      <i class="ph ph-timer fs-5"></i>
-      <span class="fs-5 timer-text">07 : 06 : 02</span>
-    </div>
-    <i class="ph ph-bell fs-2 notification-icon"></i>
-    <div class="position-relative">
-      <img
-        [src]="currentUser.avatar"
-        class="rounded-circle user-content-user-image user-profile-image"
-        [alt]="currentUser.name"
-        (click)="onToggleUserProfileDropdown()"
-        style="cursor: pointer;" />
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn d-md-none btn p-0 me-3" (click)="onToggleSidebar()">
+        <i class="ph ph-list fs-2"></i>
+    </button>
+    <h3 class="p-0 m-0 fw-bold flex-grow-1">
+        <a routerLink="/" class="page-link">{{ appTitle }}</a>
+    </h3>
+    <div class="d-flex align-items-center gap-3">
+        <div class="d-flex align-items-center gap-2 p-1 ps-4 pe-4 bg-dark text-white rounded timer-display">
+            <i class="ph ph-timer fs-5"></i>
+            <span class="fs-5 timer-text">07 : 06 : 02</span>
+        </div>
+        <i class="ph ph-bell fs-2 notification-icon"></i>
+        <div class="position-relative">
+            <img
+                 [src]="currentUser.avatar"
+                 class="rounded-circle user-content-user-image user-profile-image"
+                 [alt]="currentUser.name"
+                 (click)="onToggleUserProfileDropdown()"
+                 style="cursor: pointer;" />
 
-        <!-- User Profile Dropdown -->
-        @if (isUserProfileDropdownOpen) {
-          <div class="user-profile-dropdown" (click)="onUserProfileDropdownBackdropClick($event)">
-            <div class="user-profile-dropdown-content">
-              <!-- User Profile Header -->
-              <div class="user-profile-dropdown-header">
-                <img [src]="currentUser.avatar" class="rounded-circle user-profile-avatar" [alt]="currentUser.name">
-                <div class="user-profile-info">
-                  <div class="user-profile-name">{{ currentUser.name }}</div>
-                  <div class="user-profile-email">{{ currentUser.email }}</div>
+            <!-- User Profile Dropdown -->
+            @if (isUserProfileDropdownOpen) {
+            <div class="user-profile-dropdown" (click)="onUserProfileDropdownBackdropClick($event)">
+                <div class="user-profile-dropdown-content">
+                    <!-- User Profile Header -->
+                    <div class="user-profile-dropdown-header">
+                        <img [src]="currentUser.avatar" class="rounded-circle user-profile-avatar" [alt]="currentUser.name">
+                        <div class="user-profile-info">
+                            <div class="user-profile-name">{{ currentUser.name }}</div>
+                            <div class="user-profile-email">{{ currentUser.email }}</div>
+                        </div>
+                    </div>
+                    <!-- Profile Settings -->
+                    <div class="user-profile-dropdown-item" (click)="onOpenProfileSettings()">
+                        <i class="ph ph-gear me-3"></i>
+                        <a routerLink="/profile-settings" class="page-link">Profile settings</a>
+                    </div>
+                    <div class="user-profile-dropdown-item" (click)="allowPushNotification()">
+                        <i class="ph ph-bell-ringing me-3"></i>
+                        <span>Allow Push Notification</span>
+                    </div>
+                    <div class="user-profile-dropdown-item" (click)="onOpenProfileSettings()">
+                        <i class="ph ph-bell-simple-slash me-3"></i>
+                        <span>Disable Push Notification</span>
+                    </div>
+                    <!-- Divider -->
+                    <div class="user-profile-dropdown-divider"></div>
+                    <!-- Log out -->
+                    <div class="user-profile-dropdown-item" (click)="onLogout()">
+                        <i class="ph ph-sign-out me-3"></i>
+                        <span>Log out</span>
+                    </div>
                 </div>
-              </div>
-              <!-- Profile Settings -->
-              <div class="user-profile-dropdown-item" (click)="onOpenProfileSettings()">
-                <i class="ph ph-gear me-3"></i>
-                <span>Profile settings</span>
-              </div>
-              <div class="user-profile-dropdown-item" (click)="allowPushNotification()">
-                <i class="ph ph-bell-ringing me-3"></i>
-                <span>Allow Push Notification</span>
-              </div>
-              <div class="user-profile-dropdown-item" (click)="onOpenProfileSettings()">
-                <i class="ph ph-bell-simple-slash me-3"></i>
-                <span>Disable Push Notification</span>
-              </div>
-              <!-- Divider -->
-              <div class="user-profile-dropdown-divider"></div>
-              <!-- Log out -->
-              <div class="user-profile-dropdown-item" (click)="onLogout()">
-                <i class="ph ph-sign-out me-3"></i>
-                <span>Log out</span>
-              </div>
             </div>
-          </div>
-        }
-      </div>
+            }
+        </div>
     </div>
-  </div>
+</div>
