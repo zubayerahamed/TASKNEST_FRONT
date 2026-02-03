@@ -16,7 +16,7 @@
             <img
                  [src]="currentUser.avatar"
                  class="rounded-circle user-content-user-image user-profile-image"
-                 [alt]="currentUser.name"
+                 [alt]="currentUser.fullName"
                  (click)="onToggleUserProfileDropdown()"
                  style="cursor: pointer;" />
 
@@ -26,9 +26,9 @@
                 <div class="user-profile-dropdown-content">
                     <!-- User Profile Header -->
                     <div class="user-profile-dropdown-header">
-                        <img [src]="currentUser.avatar" class="rounded-circle user-profile-avatar" [alt]="currentUser.name">
+                        <img [src]="currentUser.avatar" class="rounded-circle user-profile-avatar" [alt]="currentUser.fullName">
                         <div class="user-profile-info">
-                            <div class="user-profile-name">{{ currentUser.name }}</div>
+                            <div class="user-profile-name">{{ currentUser.fullName }}</div>
                             <div class="user-profile-email">{{ currentUser.email }}</div>
                         </div>
                     </div>

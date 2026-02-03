@@ -6,26 +6,25 @@ import {
     OnInit,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LeftSidebar } from './left-sidebar/left-sidebar';
 import {
     ActivatedRoute,
     NavigationStart,
     Router,
     RouterOutlet,
 } from '@angular/router';
-import { Header } from './header/header';
-import { AuthService } from '../core/services/auth.service';
-import { Workspace } from '../core/models/workspace.model';
+import { AuthHelper } from '../core/helpers/auth.helper';
 import { Participant } from '../core/models/participant.model';
 import { Tag } from '../core/models/tag.model';
-import { AuthHelper } from '../core/helpers/auth.helper';
+import { Workspace } from '../core/models/workspace.model';
+import { AuthService } from '../core/services/auth.service';
 import { WorkspaceService } from '../core/services/workspace.service';
-import { JwtPayload } from 'jwt-decode';
-import { CreateTask } from '../pages/tasks/create-task/create-task';
-import { CreateEvent } from '../pages/events/create-event/create-event';
 import { CreateEventRepeater } from '../pages/events/create-event-repeater/create-event-repeater';
-import { CreateWorkspace } from '../pages/workspaces/create-workspace/create-workspace';
+import { CreateEvent } from '../pages/events/create-event/create-event';
 import { CreateProject } from '../pages/project/create-project/create-project';
+import { CreateTask } from '../pages/tasks/create-task/create-task';
+import { CreateWorkspace } from '../pages/workspaces/create-workspace/create-workspace';
+import { Header } from './header/header';
+import { LeftSidebar } from './left-sidebar/left-sidebar';
 
 @Component({
     selector: 'app-layouts',
@@ -150,11 +149,6 @@ export class Layouts implements OnInit {
 
     // User profile dropdown properties
     isUserProfileDropdownOpen = false;
-    currentUser = {
-        name: 'Zubayer Ahamed',
-        email: 'zubayer@example.com',
-        avatar: '/assets/images/zubayer.jpg',
-    };
 
     // Dummy participants data
     allParticipants: Participant[] = [
