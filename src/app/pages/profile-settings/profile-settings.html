@@ -10,3 +10,68 @@
     <div class="border"></div>
 </div>
 
+<div class="">
+    <div class="d-flex gap-3">
+        <img [src]="currentUser.avatar" class="rounded-circle border" [alt]="currentUser.fullName" style="width: 100px; height: 100px;">
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+        <div class="d-flex align-items-center"><i class="ph ph-pencil me-2"></i><span class="text-sm">Change Avatar</span></div>
+    </div>
+    <div class="user-profile-info mt-3">
+        <div class="user-profile-name">{{ currentUser.fullName }}</div>
+        <div class="user-profile-email">{{ currentUser.email }}</div>
+    </div>
+</div>
+
+<form action="">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label for="enteredFirstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="enteredFirstName" name="enteredFirstName" [(ngModel)]="enteredFirstName" required="">
+                @if(firstNameError) {
+                <span class="text-danger text-sm">{{ firstNameError }}</span>
+                }
+            </div>
+            <div class="mb-3">
+                <label for="enteredCountry" class="form-label">Country</label>
+                <input type="text" class="form-control" id="enteredCountry" name="enteredCountry" [(ngModel)]="enteredCountry">
+            </div>
+            <div class="mb-3">
+                <label for="enteredLocation" class="form-label">Location</label>
+                <input type="text" class="form-control" id="enteredLocation" name="enteredLocation" [(ngModel)]="enteredLocation">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label for="enteredLastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="enteredLastName" name="enteredLastName" [(ngModel)]="enteredLastName" required="">
+                @if(lastNameError) {
+                <span class="text-danger text-sm">{{ lastNameError }}</span>
+                }
+            </div>
+            <div class="mb-3">
+                <label for="enteredPhone" class="form-label">Phone</label>
+                <input type="text" class="form-control" id="enteredPhone" name="enteredPhone" [(ngModel)]="enteredPhone">
+            </div>
+            <div class="mb-3">
+                <label for="enteredBirthday" class="form-label">Date of Birth</label>
+                <input type="text" class="form-control" mwlFlatpickr [(ngModel)]="enteredBirthday" id="enteredBirthday" name="enteredBirthday" />
+            </div>
+        </div>
+        <div class="col-md-12">
+            <button class="btn btn-primary d-flex align-items-center">
+                <i class="ph ph-floppy-disk me-2"></i><span>Save</span>
+            </button>
+        </div>
+    </div>
+</form>
+
+<div class="border"></div>
+
+<div>
+    <h3>Delete Account</h3>
+    <p>After deleting your account you will lose all related information including tasks, events, projects, notes etc. You will not be able to recover it later, so think twice before doing this.</p>
+    <button class="btn btn-danger d-flex align-items-center">
+        <i class="ph ph-trash me-2"></i><span>Save</span>
+    </button>
+</div>

@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
+import { Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthHelper } from '../../core/helpers/auth.helper';
 import { PushNotificationService } from '../../core/services/push-notification.service';
@@ -22,6 +22,7 @@ export class Header implements OnInit {
     @Output() logout = new EventEmitter<void>();
     @Output() toggleSidebar = new EventEmitter<void>();
 
+    private destroyRef = inject(DestroyRef);
     private pushService = inject(PushNotificationService);
     private userService = inject(UserService);
 
@@ -36,7 +37,7 @@ export class Header implements OnInit {
     loadUserDetails() {
         const userDetails = AuthHelper.getJwtPayloads();
 
-        this.userService.findUser(userDetails?.userId ?? -1).subscribe({
+        const userSubs = this.userService.findUser(userDetails?.userId ?? -1).subscribe({
             next: (response) => {
                 this.currentUser = response.data;
                 this.currentUser.fullName = this.currentUser.firstName + ' ' + this.currentUser.lastName;
@@ -45,6 +46,10 @@ export class Header implements OnInit {
             error: (error) => {
                 console.error('Error fetching user data:', error);
             },
+        });
+
+        this.destroyRef.onDestroy(() => {
+            userSubs.unsubscribe();
         });
     }
 
